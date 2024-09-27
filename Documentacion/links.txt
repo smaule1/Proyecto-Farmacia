@@ -5,3 +5,4 @@ Avance 1: https://docs.google.com/document/d/1niodZemj9CfYChs4Ru82_RkO3j1zIUobro
 Bitácora: https://docs.google.com/spreadsheets/d/1VC66Q9NGtmw7JqxctLogOZmsoGlWaUx7cOOcjh26AVA/edit?usp=sharing
 Casos de Uso: https://docs.google.com/document/d/1t1_xgclRD4G-q7Ng3_SPLNXBxfzuOATW07UNYTmw0CM/edit?usp=sharing\
 Diagramas Draw.io: https://drive.google.com/file/d/1cryiOZqHUlmo00iT-3yLM7lZ6aglGF90/view?usp=sharing
+Figma: https://www.figma.com/team_invite/redeem/LgHTtOhMMECuW4Ho9eDw41
