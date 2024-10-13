@@ -1,0 +1,27 @@
+
+//Compra
+{
+    _id: ObjectId
+    medicamento: ObjectId
+    cantidad: Int32
+    imgFactura: Binary
+    farmacia: ObjectId
+    estado: String
+    cliente: ObjectId
+}
+
+//Medicamento
+{
+    _id: ObjectId
+    nombre: String
+    descripcion: String
+    presentacion: String
+    puntos: Int32
+}
+
+//Farmacia
+{
+    _id: ObjectId
+    nombre: String
+}
+
