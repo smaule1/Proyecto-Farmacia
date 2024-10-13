@@ -1,6 +1,6 @@
 Diagramas de Casos de Uso, Vista Física, Vista de Implementación y vista de procedimientos: https://drive.google.com/file/d/1cryiOZqHUlmo00iT-3yLM7lZ6aglGF90/view?usp=sharing
 
-Detalles de Casos de Uso: https://docs.google.com/document/d/1t1_xgclRD4G-q7Ng3_SPLNXBxfzuOATW07UNYTmw0CM/edit?usp=sharing\
+Detalles de Casos de Uso: https://docs.google.com/document/d/1t1_xgclRD4G-q7Ng3_SPLNXBxfzuOATW07UNYTmw0CM/edit?usp=sharing
 
 Paper Prototype: https://www.figma.com/design/dCRwfQrwt7vnWaIasDOhhr/Paper-Prototype?node-id=0-1&t=yFFMXIgR2yFzi109-1
 Paper Prototype (archivo .fig): https://drive.google.com/file/d/1SFIiQF2HAqF8nMbM8DE-imNkH7njkVL3/view?usp=sharing
