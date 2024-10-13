@@ -1,27 +1,38 @@
 
 //Compra
 {
-    _id: ObjectId
-    medicamento: ObjectId
-    cantidad: Int32
-    imgFactura: Binary
-    farmacia: ObjectId
-    estado: String
+    _id: ObjectId,
+    medicamento: ObjectId,
+    cantidad: Int32,
+    imgFactura: Binary,
+    farmacia: ObjectId,
+    estado: String,
     cliente: ObjectId
 }
 
 //Medicamento
 {
-    _id: ObjectId
-    nombre: String
-    descripcion: String
-    presentacion: String
+    _id: ObjectId,
+    nombre: String,
+    descripcion: String,
+    presentacion: String,
     puntos: Int32
 }
 
 //Farmacia
 {
-    _id: ObjectId
+    _id: ObjectId,
     nombre: String
 }
+
+//Usuario
+{
+    _id: ObjectId,
+    nombreUsuario: String,
+    contrasena: String,
+    email: String,
+    rol: String
+}
+
+
 
