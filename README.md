@@ -16,14 +16,15 @@
   - Añadir filtros al flujo (como flujo alterno)
   - Mencionar orden en el que se muestran las compras
 - Diagrama de Clases
-  - Añadir rol administrador
+  - ~~Añadir rol administrador~~
   - Añadir programa beneficio (creo que no hace falta esto)
     - Añadir compra a programa
     - Añadir medicamento a programa
-  - Medicamento
-    - Añadir puntos para canjear
-    - CRUD administrativo para poder agregar/modificar datos a los medicamentos
-  - Hacer bien las relaciones entre objetos (somos la decepción de Avilés :'v)
+  - ~~Medicamento~~
+    - ~~Añadir puntos para canjear~~
+    - ~~CRUD administrativo para poder agregar/modificar datos a los medicamentos~~
+  - ~~Hacer bien las relaciones entre objetos (somos la decepción de Avilés :'v)~~
+  - Agregar Vistas nuevas
 - Diagramas de Actividad
   - Añadir filtros a los diagramas
   - Diagramas para el perfil de administrador
