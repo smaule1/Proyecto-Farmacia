@@ -1,1 +1,29 @@
 # Proyecto Farmacia - Diseño de Software
+
+- Administrador de medicamentos (Gestor Programa)
+  - Definir puntos y toda esa mamada (las farmacias todavía no)
+- Elegir de N Programas Beneficio (o puede ser solo uno creo?)
+  - Hacer que el usuario deba suscribirse a un programa en registro
+  - Habilitar suscripción a otros programas (mínimo ser sub de uno)
+- Filtros
+  - Filtrar por fecha
+  - Filtrar por número de factura no es realmente necesario (Encargado)
+  - Filtrar por usuario no es realmente necesario (Encargado)
+  - Filtrar por programa
+- Historial Compras
+  - Mostrar programa al que pertenece la compra registrada
+- Casos de Uso
+  - Añadir filtros al flujo (como flujo alterno)
+  - Mencionar orden en el que se muestran las compras
+- Diagrama de Clases
+  - Añadir rol administrador
+  - Añadir programa beneficio (creo que no hace falta esto)
+    - Añadir compra a programa
+    - Añadir medicamento a programa
+  - Medicamento
+    - Añadir puntos para canjear
+    - CRUD administrativo para poder agregar/modificar datos a los medicamentos
+  - Hacer bien las relaciones entre objetos (somos la decepción de Avilés :'v)
+- Diagramas de Actividad
+  - Añadir filtros a los diagramas
+  - Diagramas para el perfil de administrador
