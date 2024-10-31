@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import bcrypt from "bcrypt";
 
 //Enum
 const Rol = {
@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema({
     enum: Object.keys(Rol), //enum valida que el rol se encuentre dentro del array de Rol
     required:true
   }    
+});
+
+userSchema.pre('save', async function (next){
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+  next(); 
 });
 
 
