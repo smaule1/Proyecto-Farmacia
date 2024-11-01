@@ -6,5 +6,5 @@ export default router;
 
 
 router.post('/registrar', registrar);
-router.post('/login', login);
+router.get('/login', login);
 
