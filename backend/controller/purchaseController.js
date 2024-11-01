@@ -1,5 +1,5 @@
-import Purchase from "../model/purchaseModel";
-import mongoose from 'mongoose';
+import Purchase from "../model/purchaseModel.js";
+//import mongoose from 'mongoose';
 
 export const registrar = async (req, res) => {
     const reqBody = req.body;

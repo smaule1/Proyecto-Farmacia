@@ -1,5 +1,5 @@
-import Medicine from "../model/medicineModel";
-import mongoose from 'mongoose';
+import Medicine from "../model/medicineModel.js";
+//import mongoose from 'mongoose';
 
 //Esto me parece que no hace falta pero está por ahora
 export const registrar = async (req, res) => {

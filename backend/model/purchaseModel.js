@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import User from './userModel';
-import Medicine from './medicineModel';
-import Pharmacy from './pharmacyModel';
+import User from './userModel.js';
+import Medicine from './medicineModel.js';
+import Pharmacy from './pharmacyModel.js';
 
 //Enum
 const Estado = {
@@ -14,10 +14,13 @@ Object.freeze(Estado);
 
 //Schema
 const purchaseSchema = new mongoose.Schema({
-    //medicamento: {type: mongoose.Types.ObjectId, ref:'medicines', required:true},
+    medicamento: {type: mongoose.Types.ObjectId, ref:'medicines', required:true},
     cantidad: {type: Number, required:true},
-    imgFactura: {data: Buffer, contentType: String, required:true},
-    //farmacia: {type: mongoose.Types.ObjectId, ref:'pharmacies', required:true},
+    imgFactura: {
+      data: { type: Buffer, required: true },
+      contentType: { type: String, required: true }
+    },
+    farmacia: {type: mongoose.Types.ObjectId, ref:'pharmacies', required:true},
     estado: {type: String, enum: Object.keys(Estado), required:true},
     cliente: {type: mongoose.Types.ObjectId, ref:'users', required:true} // No sé si esto está bien hecho
 });

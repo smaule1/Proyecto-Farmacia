@@ -1,5 +1,5 @@
-import Pharmacy from "../model/pharmacyModel";
-import mongoose from 'mongoose';
+import Pharmacy from "../model/pharmacyModel.js";
+//import mongoose from 'mongoose';
 
 //Esto me parece que no hace falta pero está por ahora
 export const registrar = async (req, res) => {

@@ -6,6 +6,9 @@ import {connectDB} from './mongoDriver.js'
 
 
 import userRoutes from './routes/userRoutes.js'
+import medicineRoutes from './routes/medicineRoutes.js'
+import pharmacyRoutes from './routes/pharmacyRoutes.js'
+import purchaseRoutes from './routes/purchaseController.js'
 
 dotenv.config();
 
@@ -17,6 +20,9 @@ app.use(express.json());
 
 
 app.use('/users', userRoutes);
+app.use('/medicines', medicineRoutes);
+app.use('/pharmacies', pharmacyRoutes);
+app.use('/purchases', purchaseRoutes);
 
 app.listen(5000, async ()=>{
 	console.log("Server started at http://localhost:5000");  
