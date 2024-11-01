@@ -1,5 +1,6 @@
 import User from '../model/userModel.js';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 
 
 
@@ -7,16 +8,21 @@ import mongoose from 'mongoose';
 export const registrar = async (req, res) => {
     const reqBody = req.body;
 
-    /*
-    if(!reqBody.nombreUsuario || !reqBody.email || !reqBody.password || !reqBody.rol){
-        return res.status(400).json({success:false, message:'Información incompleta'});        
-    }
-*/
     
+    const user = new User(reqBody);
 
-    try{
-        const user = new User(reqBody);
+    try{    
         await user.save();
+        const token = jwt.sign(
+            {
+                _id: user._id,
+                nombreUsuario: user.nombreUsuario,
+                rol: user.rol
+            },
+            process.env.JWT_PRIVATE_KEY,
+            { expiresIn: "15m"}
+        );          
+        res.cookie('userInfo', token, {httpOnly:true, maxAge: 60*60}) //maxAge 1 hora
         res.status(200).json({success:true});
     }catch(error){                        
         if(error.code === 11000){
