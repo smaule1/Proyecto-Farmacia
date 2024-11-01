@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import User from '../userModeljs';
-import Medicine from '../medicineModeljs';
-import Pharmacy from '../pharmacyModeljs';
+import User from './userModel';
+import Medicine from './medicineModel';
+import Pharmacy from './pharmacyModel';
 
 //Enum
 const Estado = {
