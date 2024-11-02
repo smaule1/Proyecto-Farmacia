@@ -36,6 +36,6 @@ export const registrar = async (req, res) => {
 };
 
 
-export const login = async (req, res) => {
-    
+export const login = async (req, res) => {    
+    res.send('a');
 };
