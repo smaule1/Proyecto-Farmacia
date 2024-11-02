@@ -87,3 +87,7 @@ function createToken(user) {
     );
     return token;
 }
+
+export function logout(req, res){
+    res.cookie('userInfo', '', {maxAge: 1});
+}
