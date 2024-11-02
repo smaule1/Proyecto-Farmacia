@@ -15,7 +15,7 @@ export const registrar = async (req, res) => {
     
 
     try{
-        const user = new User(reqBody);
+        const user = new User(reqBody);       
         await user.save();
         res.status(200).json({success:true});
     }catch(error){                
@@ -24,6 +24,6 @@ export const registrar = async (req, res) => {
 };
 
 
-export const login = async (req, res) => {
-    
+export const login = async (req, res) => {    
+    res.send('a');
 };
