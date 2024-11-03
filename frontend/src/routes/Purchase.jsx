@@ -1,5 +1,4 @@
 import React from 'react';
-import NavBar from '../components/NavBar';
 import { TextField, Container, styled, Button, Autocomplete, InputAdornment, IconButton }from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Grid from '@mui/material/Grid2';
@@ -56,7 +55,6 @@ const medicamentos = [
 function Purchase() {  
   return (
     <div>      
-        <NavBar></NavBar>
         <Container maxWidth="lg" >
         <h2>Registrar una Compra</h2>
         <hr></hr>

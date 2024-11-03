@@ -1,10 +1,11 @@
 import express from 'express';
-import { registrar, login } from '../controller/userController.js';
+import { registrar, login, logout } from '../controller/userController.js';
 
 const router = express.Router();
 export default router;
 
 
 router.post('/registrar', registrar);
-router.get('/login', login);
+router.post('/login', login);
+router.get('/logout', logout);
 

@@ -6,6 +6,7 @@ import Temp from './components/Temp';
 import Login from './components/Login';
 import ProtectedRoute from './ProtectedRoute';
 import CurrentUserContext from './Context';
+import Purchase from './routes/Purchase';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -22,7 +23,8 @@ function App() {
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route path="/temp" element={<Temp />} />
-          </Route>          
+          </Route>
+          <Route path="/purchase" element={<Purchase />} />
           <Route path="/register" element={<Register />} />
           <Route path="/*" element={<Register />} />
           <Route path="/login" element={<Login />} />
