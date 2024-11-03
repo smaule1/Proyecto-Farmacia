@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useContext } from 'react';
+import CurrentUserContext from '../Context';
 
 
 function Register() {
@@ -12,7 +14,13 @@ function Register() {
   let passwordClass = 'form-control';
   let password2Class = 'form-control';
 
-
+  const {
+    currentUser,
+    setCurrentUser
+  } = useContext(CurrentUserContext);
+  
+  console.log(currentUser);
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
