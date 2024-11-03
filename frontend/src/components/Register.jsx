@@ -24,7 +24,6 @@ function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-
     nombreClass = 'form-control';
     emailClass = 'form-control';
     passwordClass = 'form-control';
@@ -91,9 +90,9 @@ function Register() {
 
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-4">
+    <div className="container h-75">
+      <div className="row justify-content-center align-items-center h-100">
+        <div className="col-md-4" >
           <div className="card shadow-lg">
             <div className="mt-4 ms-4 mb-2">
               <h2>Registrarse</h2>
