@@ -2,7 +2,7 @@ POST http://localhost:5000/api/users/registrar HTTP/1.1
 content-type: application/json
 
 {
-    "nombreUsuario":"a",
+    "nombreUsuario":"s",
     "email": "c12@email.com",
     "password": "A",
     "rol": "Usuario"
