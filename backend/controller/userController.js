@@ -69,7 +69,7 @@ export const login = async (req, res) => {
     //Check Password
     const auth = await bcrypt.compare(password, user.password);
     if (!auth) {
-        res.status(400).json({ errors: [{ param: 'email', message: 'Contraseña Incorrecta' }] });
+        res.status(400).json({ errors: [{ param: 'password', message: 'Contraseña Incorrecta' }] });
         return;
     }
     //Response Token and User data 
