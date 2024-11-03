@@ -27,15 +27,25 @@ export const login = async (req, res) => {
 
     //Token Authenticaton
     const cookies = req.cookies;
-    if (cookies) {
+    if (cookies) { // La request viene con cookies
         reqToken = cookies.userInfo;
-        if (reqToken) {
+        if (reqToken) { //ReqToken se encuentra en los cookies
             jwt.verify(reqToken, process.env.JWT_PRIVATE_KEY, (err, decoded) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log(decoded);
-                    //TODO: return user info                
+                if (err) { //ReqToken es inválido
+                    res.cookie('userInfo', '', { maxAge: 1 }); //El token inválido se elimina de las cookies                    
+                } else { //ReqToken es válido
+                    try{
+                        const user = getUser(decoded.data.user._id);
+                        const token = createToken(user);
+                        //Enviar token fresco al usuario
+                        res.cookie('userInfo', token, { httpOnly: true, maxAge: 60 * 60, sameSite: 'strict' })                        
+                        res.status(200).json({ data: { user } });
+                        return;
+                    }
+                    catch(err){ //No se pudo conseguir el Usuario, error del servidor
+                        res.status(500).json({ errors: [{ message: 'err' }] });
+                        return;
+                    }                                                     
                 }
             })
         }
@@ -43,7 +53,6 @@ export const login = async (req, res) => {
 
 
     //Credential Authentication
-
     const { email, password } = req.body;
 
     //Validation
@@ -122,4 +131,17 @@ function handleMongooseErros(errorObj) {
         }
     }
     return errors;
+}
+
+async function getUser(id){           
+    if(mongoose.Types.ObjectId.isValid(id)){
+        throw new Error('Invalid id');       
+    }
+
+    try{
+        const user = await User.findById(id);
+        return user;
+    }catch(error){
+        throw new Error(error);
+    }
 }
