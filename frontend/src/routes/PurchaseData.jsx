@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Container, styled, Button, Autocomplete, InputAdornment, IconButton }from '@mui/material';
+import { TextField, Container, styled, Button, Autocomplete, InputAdornment, Typography }from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Grid from '@mui/material/Grid2';
 import DatePickerRequest from '../components/DatePickerRequest';
@@ -24,7 +24,7 @@ const StyledTextField = styled(TextField)(({ }) => ({
   },
   boxShadow: '0 1px 5px #7749F8',
   borderRadius: 10,
-  width: '60%',
+  width: '100%',
   height: 50,
    textAlign: 'center',
 }));
@@ -52,35 +52,41 @@ const medicamentos = [
 ];
 
 
-function Purchase() {  
+function PurchaseData() {  
   return (
     <div>      
         <Container maxWidth="lg" sx={{mt: 5}}>
-        <h2>Registrar una Compra</h2>
+        <h2>Compra1</h2>
         <hr></hr>
 
-        <Grid container spacing={5} sx={{mt: 10, mx: 'auto', width: '100%', textAlign: 'center'}}>
-          <Grid size={6} >
-          <Autocomplete noOptionsText="No se encontraron resultados" options={farmacias} renderInput={(params) => <StyledTextField {...params} placeholder='Farmacia'/>} />
-          </Grid>
-          <Grid size={6}>
-          <Autocomplete noOptionsText="No se encontraron resultados" options={medicamentos} renderInput={(params) => <StyledTextField {...params} placeholder='Medicamento'/>} />
-          </Grid>
-          <Grid size={6}>
+        <Grid container spacing={5} sx={{mt: 10, mx: 'auto', width: '100%'}}>
+          <Grid size={4} >
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Farmacia:</Typography>
+            <Autocomplete noOptionsText="No se encontraron resultados" options={farmacias} 
+            renderInput={(params) => <StyledTextField {...params} placeholder='Farmacia'/>} sx={{display: 'flex', justifyContent: 'center'}}/>
+
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Fecha:</Typography>
+            <AmountCheckBox CustomCheckBox={CustomCheckBox}/>
+
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Número de Factura:</Typography>
             <DatePickerRequest StyledTextField={StyledTextField}/>
           </Grid>
-          <Grid size={6}>
-           <AmountCheckBox CustomCheckBox={CustomCheckBox}/>
-          </Grid>
-          <Grid size={6}>
+          <Grid size={4}>
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Medicamento:</Typography>
+            <Autocomplete noOptionsText="No se encontraron resultados" options={medicamentos} renderInput={(params) => <StyledTextField {...params} placeholder='Medicamento'/>} />
+            
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Cantidad:</Typography>
             <StyledTextField id="outlined-required" placeholder="Número de Factura"/>
-          </Grid>
-          <Grid size={6}>
+            
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
             <StyledTextField slotProps={{ input: { startAdornment: (
-              <InputAdornment position="start">
-                <UploadFileIcon fontSize="large" sx={{color: 'black', mb: 0.5}}/>
-              </InputAdornment>
-            )}}} id="outlined-basic" placeholder="Imagen de Factura"/>
+                <InputAdornment position="start">
+                    <UploadFileIcon fontSize="large" sx={{color: 'black', mb: 0.5}}/>
+                </InputAdornment>
+                )}}} id="outlined-basic" placeholder="Imagen de Factura"/>
+          </Grid>
+          <Grid size={4}>
+            <DatePickerRequest StyledTextField={StyledTextField}/>
           </Grid>
         </Grid>
 
@@ -99,4 +105,4 @@ function Purchase() {
   )
 }
 
-export default Purchase
+export default PurchaseData
