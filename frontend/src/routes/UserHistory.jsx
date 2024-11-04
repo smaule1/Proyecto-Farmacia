@@ -93,9 +93,9 @@ function userHistory() {
     const amountOfPages = Math.ceil(testData.length / itemsPerPage);
 
     const statusColors = {
-        Pendiente: '#398EA1', // Naranja
-        Aprobado: '#4DAF62',  // Verde
-        Rechazado: '#923335'  // Rojo
+        Pendiente: '#398EA1', 
+        Aprobado: '#4DAF62', 
+        Rechazado: '#923335' 
       };
 
       const statusOrder = {

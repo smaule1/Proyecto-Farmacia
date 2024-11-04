@@ -1,5 +1,23 @@
+import { useState, useEffect} from 'react';
 
-function NavBar() {
+function NavBar({rol}) {
+  const[name, setName] = useState('');
+  
+  function renderInput(){
+    rol !== 'Usuario' ? setName('Solicitudes Pendientes') : setName('Historial');
+  }
+
+  function renderCorrectNavBar(){
+    return(
+      <li className="nav-item" id="inicioSesion">
+        <a className="nav-link text-dark" href="/purchase">Registrar Compra</a>
+      </li>
+    )
+  }
+  useEffect(() => {
+    renderInput();
+  }, []);
+
   return (
     <header>
       <nav className="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -14,11 +32,9 @@ function NavBar() {
               <li className="nav-item" id="registro">
                 <a className="nav-link text-dark" href="#">Home</a>
               </li>
-              <li className="nav-item" id="inicioSesion">
-                <a className="nav-link text-dark" href="/purchase">Registrar Compra</a>
-              </li>
+                { rol === 'Usuario' && renderCorrectNavBar()}
               <li className="nav-item">
-                <a className="nav-link text-dark" href="/userHistory">Historial</a>
+                <a className="nav-link text-dark" href="/userHistory">{name}</a>
               </li>
             </ul>
           </div>

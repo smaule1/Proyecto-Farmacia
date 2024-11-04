@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useReact } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, styled, Button, Typography, Box }from '@mui/material';
 import Grid from '@mui/material/Grid2';
@@ -13,8 +13,19 @@ const StyledTypography = styled(Typography)(({ }) => ({
     padding: '8px 20px 20px',
 }));
 
-function PurchaseData() {  
+function PurchaseData() { 
+    const[rol,setRol] = useState('Encargado'); 
     const { id } = useParams();
+
+    function renderInput(){
+        return(
+            <div>
+                <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
+                <StyledTypography variant="body1">Dueño de la Compra</StyledTypography>
+            </div>
+        );
+    }
+
   return (
     <div>      
         <Container maxWidth="lg" sx={{mt: 5}}>
@@ -22,6 +33,7 @@ function PurchaseData() {
         <hr></hr>
 
         <Grid container spacing={5} sx={{mt: 10}}>
+
           <Grid size={4} >
             <Typography variant="body1" sx={{px: 2, py: 1}}>Farmacia:</Typography>
             <StyledTypography variant="body1">Farmacia Elegida</StyledTypography>
@@ -38,9 +50,9 @@ function PurchaseData() {
             
             <Typography variant="body1" sx={{px: 2, py: 1}}>Cantidad:</Typography>
             <StyledTypography variant="body1" >Cantidad Elegida</StyledTypography>
-            
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
-            <StyledTypography variant="body1">Dueño de la Compra</StyledTypography>
+
+            {rol !== 'Usuario' && renderInput()}
+
           </Grid>
           <Grid size={4}>
              <Typography variant="body1" sx={{px: 2, py: 1}}>Imagen de la factura:</Typography>

@@ -12,7 +12,7 @@ import PurchaseData from './routes/PurchaseData'
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-
+   
   return (
     <>
       <CurrentUserContext.Provider
@@ -21,7 +21,7 @@ function App() {
           setCurrentUser
         }}
       >
-        <NavBar />
+        <NavBar rol={'Usuario'}/>
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route path="/temp" element={<Temp />} />
