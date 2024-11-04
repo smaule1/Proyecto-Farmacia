@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 import CurrentUserContext from '../Context';
 
 
@@ -18,6 +19,7 @@ function Register() {
   const [passwordClass2, setPasswordClass2] = useState('form-control');  
 
   const {    
+    currentUser,
     setCurrentUser
   } = useContext(CurrentUserContext);
   
@@ -50,12 +52,13 @@ function Register() {
       const response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({ nombreUsuario: nombreUsuario, email: email, password: password, rol: 'Usuario' }),
-        headers: myHeaders
+        headers: myHeaders,
+        credentials: 'include'
       });
 
       if (response.ok) {
         const resBody = await response.json();
-        setCurrentUser(resBody.data.user);        
+        setCurrentUser(resBody.data.user);                 
       } else {
         const resBody = await response.json();        
         for (const error of resBody.errors) {          
@@ -76,7 +79,9 @@ function Register() {
   }
 
 
-
+  if(currentUser){ //El usario ya está logeado
+    return <Navigate to="/Temp" />; //TODO: change temp
+  }
 
   return (
     <div className="container h-75">

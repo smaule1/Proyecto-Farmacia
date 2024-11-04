@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 import CurrentUserContext from '../Context';
 
 function Login() {
@@ -36,7 +37,8 @@ function Login() {
       const response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({ email: email, password: password }),
-        headers: myHeaders
+        headers: myHeaders,
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -63,6 +65,10 @@ function Login() {
       console.error(error.message);
       setAlertMessage('Ocurrió un error inesperado.');
     }      
+}
+
+if(currentUser){ //El usario ya está logeado
+  return <Navigate to="/temp" />; //TODO: change temp
 }
 
 return (
