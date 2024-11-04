@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 
 
+const MAX_AGE = 1000 * 60 * 60;
 
 export const registrar = async (req, res) => {
     const reqBody = req.body;
@@ -14,67 +15,73 @@ export const registrar = async (req, res) => {
     try {
         await user.save();
         const token = createToken(user);
-        res.cookie('userInfo', token, { httpOnly: true, maxAge: 60 * 60, sameSite: 'strict' }) //maxAge 1 hora
+        res.cookie('userInfo', token, { httpOnly: true, maxAge: MAX_AGE, sameSite: 'strict' }) //maxAge 1 hora
         res.status(200).json({ data: { user } });
     } catch (error) {
-        if (error.code === 11000) {
-            const message = `Ya existe un usario registrado con ese email`
-            res.status(400).json({ success: false, message: message });
-        } else {
-            res.status(400).json({ success: false, message: error.message });
-        }
-
+        const errorList = handleMongooseErros(error);
+        res.status(400).json({ errors: errorList });
     }
 };
 
 
 export const login = async (req, res) => {
-
+    
     //Token Authenticaton
-
-    const cookies = req.cookies;
-    if (cookies) {
-        reqToken = cookies.userInfo;
-        if (reqToken){
-            jwt.verify(reqToken, process.env.JWT_PRIVATE_KEY, (err, decoded) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log(decoded);
-                    //TODO: return user info                
-                }
-            })
+    const reqToken = req.cookies.userInfo;
+    if (reqToken) { //ReqToken se encuentra en los cookies            
+        try {
+            const decodedToken = jwt.verify(reqToken, process.env.JWT_PRIVATE_KEY);  //ReqToken es válido                                     
+            const user = await getUser(decodedToken._id);
+            const token = createToken(user);
+            //Enviar token fresco al usuario
+            res.cookie('userInfo', token, { httpOnly: true, maxAge: MAX_AGE, sameSite: 'strict' })
+            res.status(200).json({ data: { user } });
+            return;
+        } catch (err) {
+            console.log(err);
+            if (err.name == 'TokenExpiredError' || err.name == 'JsonWebTokenError') { //ReqToken es inválido
+                res.cookie('userInfo', '', { maxAge: 1, sameSite: 'strict', httpOnly: true }); //El token inválido se elimina de las cookies                                        
+            } else {
+                res.status(500).json({ errors: [{ message: err }] });//No se pudo conseguir el Usuario, error del servidor
+                return;
+            }
         }
     }
 
 
-    //Credential Authentication
 
-    const { email, password } = req.body;
+//Credential Authentication
+const { email, password } = req.body;
 
-    //Validation
-    if (!email || !password) {
-        res.status(400).json({ message: 'Missing parameters in request body' });
-        return;
-    }
-    //Get User by Email
-    const user = await User.findOne({ 'email': email });
-    if (!user) {
-        res.status(400).json({ success: false, message: 'El correo electónico no está registrado.' });
-        return;
-    }
-    //Check Password
-    const auth = await bcrypt.compare(password, user.password);
-    if (!auth) {
-        res.status(400).json({ success: false, message: 'Contraseña incorrecta' });
-        return;
-    }
-    //Response Token and User data 
-    const token = createToken(user);
-    res.cookie('userInfo', token, { httpOnly: true, maxAge: 60 * 60, sameSite: 'strict' }) //maxAge 1 hora
-    res.status(200).json({ data: { user } });
+//Validation
+if (!email || !password) {
+    res.status(400).json({ errors: [{ message: 'Parámetros insuficientes.' }] });
+    return;
+}
+//Get User by Email
+const user = await User.findOne({ 'email': email });
+if (!user) {
+    res.status(400).json({ errors: [{ param: 'email', message: 'El correo electónico no está registrado.' }] });
+    return;
+}
+//Check Password
+const auth = await bcrypt.compare(password, user.password);
+if (!auth) {
+    res.status(400).json({ errors: [{ param: 'password', message: 'Contraseña Incorrecta' }] });
+    return;
+}
+//Response Token and User data 
+const token = createToken(user);
+res.cookie('userInfo', token, { httpOnly: true, maxAge: MAX_AGE, sameSite: 'strict' }) //maxAge 1 hora
+res.status(200).json({ data: { user } });
 
 };
+
+export function logout(req, res) {
+    res.cookie('userInfo', '', { maxAge: 1 });
+}
+
+
 
 function createToken(user) {
     const token = jwt.sign(
@@ -88,6 +95,50 @@ function createToken(user) {
     return token;
 }
 
-export function logout(req, res){
-    res.cookie('userInfo', '', {maxAge: 1});
+function handleMongooseErros(errorObj) {
+    const errors = [];
+
+    console.log(errorObj);
+
+    if (errorObj.code == 11000) {
+        const param = Object.keys(errorObj.keyPattern)[0];
+        const message = `Ese ${param} ya esta registrado.`;
+        const error = { param: param, message: message };
+        errors.push(error);
+
+    } else {
+        const errorList = Object.values(errorObj.errors);
+
+        for (const err of errorList) {
+            console.log(err);
+
+            const param = err.path;
+            let message = '';
+            switch (err.kind) {
+                case 'required':
+                    message = `El paramámetro ${param} es requerido.`
+                    break;
+                case 'enum':
+                    message = `El paramámetro ${param} debe tener un valor permitido.`
+                    break;
+                default:
+                    break;
+            }
+            const error = { param: param, message: message };
+            errors.push(error);
+        }
+    }
+    return errors;
+}
+
+async function getUser(id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw new Error('Invalid id');
+    }    
+    try {
+        const user = await User.findById(id);
+        return user;
+    } catch (error) {
+        throw error;
+    }
 }

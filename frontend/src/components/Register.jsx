@@ -1,38 +1,42 @@
 import { useState } from 'react';
 import { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 import CurrentUserContext from '../Context';
 
 
 function Register() {
+  //Advertencia: Usar state para los valores de input del forms puede bajar el rendimiento
+  // Este código se puede remplazar por variables normales.
   const [nombreUsuario, setNombreUsuario] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
-  let alertMessage = '';  
-  let nombreClass = 'form-control';
-  let emailClass = 'form-control';
-  let passwordClass = 'form-control';
-  let password2Class = 'form-control';
+  // States necesarios
+  const [alertMessage, setAlertMessage] = useState('');
+  const [nombreClass, setNombreClass] = useState('form-control');
+  const [emailClass, setEmailClass] = useState('form-control');
+  const [passwordClass, setPasswordClass] = useState('form-control');
+  const [passwordClass2, setPasswordClass2] = useState('form-control');  
 
-  const {
+  const {    
     currentUser,
     setCurrentUser
   } = useContext(CurrentUserContext);
   
-  console.log(currentUser);
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    nombreClass = 'form-control';
-    emailClass = 'form-control';
-    passwordClass = 'form-control';
-    password2Class = 'form-control';
-    alertMessage = '';        
+    setNombreClass('form-control');
+    setEmailClass('form-control');
+    setPasswordClass('form-control');
+    setPasswordClass2('form-control');
+    setAlertMessage('');
 
     if (password != password2) {
-      password2Class =+ ' border-danger border-2'; 
-      alertMessage = 'Ambas constraseñas deben ser iguales.';
+      setPasswordClass2(passwordClass2 + ' border-danger border-2');
+      setPasswordClass(passwordClass + ' border-danger border-2');
+      setAlertMessage('Ambas constraseñas deben ser iguales.');      
       return;
     }
 
@@ -47,47 +51,37 @@ function Register() {
     try {
       const response = await fetch(url, {
         method: "POST",
-        body: JSON.stringify({ nombreUsuario:nombreUsuario, email:email, password:password, rol:'Usuario' }),
-        headers: myHeaders
+        body: JSON.stringify({ nombreUsuario: nombreUsuario, email: email, password: password, rol: 'Usuario' }),
+        headers: myHeaders,
+        credentials: 'include'
       });
 
-      if(response.ok){
-        let resBody = await response.json();
-        console.log(resBody);
-      }
-
-      //TODOD error handling
-      // if (!response.ok) {
-      //   let obj = await response.json();
-      //   if (obj.error == "Invalid Input") {
-      //     if (obj.type == "nombre") {
-      //       setWarningClasses(nameInput);
-      //       alertMessage = `<div class="alert alert-danger row h-20" role="alert">${obj.message}</div>`
-      //     }
-      //     if (obj.type == "email") {
-      //       setWarningClasses(emailInput);
-      //       addAlert(obj.message);
-      //     }
-      //     if (obj.type == "contraseña") {
-      //       setWarningClasses(passwordInput);
-      //       addAlert(obj.message);
-      //     }
-      //   } else if (obj.error == "Invalid Operation") {
-      //     setWarningClasses(emailInput);
-      //     addAlert(obj.message);
-      //   }
-      // } else {
-      //   //window.location.pathname = "/Iniciosesion";
-      // }
-
+      if (response.ok) {
+        const resBody = await response.json();
+        setCurrentUser(resBody.data.user);                 
+      } else {
+        const resBody = await response.json();        
+        for (const error of resBody.errors) {          
+          if (error.param) {
+            switch (error.param) {
+              case 'email':
+                setEmailClass(emailClass + ' border-danger border-2');
+                break;              
+            }
+          }
+          setAlertMessage(error.message + '\n');          
+        }
+      }      
     } catch (error) {
       console.error(error.message);
-      alertMessage = 'Ocurrió un error inesperado.';
+      setAlertMessage('Ocurrió un error inesperado.');
     }
   }
 
 
-
+  if(currentUser){ //El usario ya está logeado
+    return <Navigate to="/Temp" />; //TODO: change temp
+  }
 
   return (
     <div className="container h-75">
@@ -116,7 +110,7 @@ function Register() {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Confirmar Contraseña</label>
-                  <input type="password" className={password2Class} placeholder="Vuelve a ingresar tu contraseña"
+                  <input type="password" className={passwordClass2} placeholder="Vuelve a ingresar tu contraseña"
                     value={password2} onChange={(e) => setPassword2(e.target.value)} required></input>
                 </div>
                 <div className="d-grid">
@@ -126,8 +120,8 @@ function Register() {
               <div className="mt-3">
                 <p>¿Ya tienes una cuenta? Inicia Sesión</p>
               </div>
-              <div className="mt-3">                
-                {alertMessage && <div className="alert alert-danger row h-20" role="alert">${alertMessage}</div>}
+              <div className="mt-3">
+                {alertMessage && <div className="alert alert-danger row h-20" role="alert">{alertMessage}</div>}
               </div>
             </div>
           </div>
