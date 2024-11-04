@@ -28,7 +28,7 @@ function App() {
           </Route>
           <Route path="/purchase" element={<Purchase />} />
           <Route path="/userHistory" element={<UserHistory />} />
-          <Route path="/userHistory/purchaseData" element={<PurchaseData />} />
+          <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />
           <Route path="/register" element={<Register />} />
           <Route path="/*" element={<Register />} />
           <Route path="/login" element={<Login />} />

@@ -1,102 +1,60 @@
 import React from 'react';
-import { TextField, Container, styled, Button, Autocomplete, InputAdornment, Typography }from '@mui/material';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { useParams } from 'react-router-dom';
+import { Container, styled, Button, Typography, Box }from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import DatePickerRequest from '../components/DatePickerRequest';
-import AmountCheckBox from '../components/AmountCheckBox';
 
-const StyledTextField = styled(TextField)(({ }) => ({
-  '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: '#7749F8',
-        borderRadius: '10px',
-        height: 55,
-      },
-      '&:hover fieldset': {
-        borderColor: '#7749F8',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#7749F8',
-      },
-  },
-  '& input::placeholder':{
-    paddingLeft: 5,
-  },
-  boxShadow: '0 1px 5px #7749F8',
-  borderRadius: 10,
-  width: '100%',
-  height: 50,
-   textAlign: 'center',
+const StyledTypography = styled(Typography)(({ }) => ({
+    boxShadow: '0 1px 5px #7749F8',
+    border: '1px solid #7749F8',
+    borderRadius: 10,
+    width: '90%',
+    height: 40,
+    marginBottom: 10,
+    padding: '8px 20px 20px',
 }));
 
-const CustomCheckBox = styled(StyledTextField)({
-  '& input::-webkit-inner-spin-button': {
-    display: 'none',
-  },
-  '& input::-webkit-outer-spin-button': {
-    display: 'none',
-  },
-  '& input':{
-    textAlign: 'center',
-  },
-});
-
-const farmacias = [
-  { label: 'Increible', id: 1 },
-  { label: 'Farmacia', id: 2 },
-];
-
-const medicamentos = [
-  { label: 'Increible', id: 1 },
-  { label: 'Medicamento', id: 2 },
-];
-
-
 function PurchaseData() {  
+    const { id } = useParams();
   return (
     <div>      
         <Container maxWidth="lg" sx={{mt: 5}}>
-        <h2>Compra1</h2>
+        <h2>{id}</h2>
         <hr></hr>
 
-        <Grid container spacing={5} sx={{mt: 10, mx: 'auto', width: '100%'}}>
+        <Grid container spacing={5} sx={{mt: 10}}>
           <Grid size={4} >
             <Typography variant="body1" sx={{px: 2, py: 1}}>Farmacia:</Typography>
-            <Autocomplete noOptionsText="No se encontraron resultados" options={farmacias} 
-            renderInput={(params) => <StyledTextField {...params} placeholder='Farmacia'/>} sx={{display: 'flex', justifyContent: 'center'}}/>
+            <StyledTypography variant="body1">Farmacia Elegida</StyledTypography>
 
             <Typography variant="body1" sx={{px: 2, py: 1}}>Fecha:</Typography>
-            <AmountCheckBox CustomCheckBox={CustomCheckBox}/>
+            <StyledTypography variant="body1">Fecha Elegida</StyledTypography>
 
             <Typography variant="body1" sx={{px: 2, py: 1}}>Número de Factura:</Typography>
-            <DatePickerRequest StyledTextField={StyledTextField}/>
+            <StyledTypography variant="body1">Número de Factura</StyledTypography>
           </Grid>
           <Grid size={4}>
             <Typography variant="body1" sx={{px: 2, py: 1}}>Medicamento:</Typography>
-            <Autocomplete noOptionsText="No se encontraron resultados" options={medicamentos} renderInput={(params) => <StyledTextField {...params} placeholder='Medicamento'/>} />
+            <StyledTypography variant="body1">Medicamento Elegido</StyledTypography>
             
             <Typography variant="body1" sx={{px: 2, py: 1}}>Cantidad:</Typography>
-            <StyledTextField id="outlined-required" placeholder="Número de Factura"/>
+            <StyledTypography variant="body1" >Cantidad Elegida</StyledTypography>
             
             <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
-            <StyledTextField slotProps={{ input: { startAdornment: (
-                <InputAdornment position="start">
-                    <UploadFileIcon fontSize="large" sx={{color: 'black', mb: 0.5}}/>
-                </InputAdornment>
-                )}}} id="outlined-basic" placeholder="Imagen de Factura"/>
+            <StyledTypography variant="body1">Dueño de la Compra</StyledTypography>
           </Grid>
           <Grid size={4}>
-            <DatePickerRequest StyledTextField={StyledTextField}/>
+             <Typography variant="body1" sx={{px: 2, py: 1}}>Imagen de la factura:</Typography>
+             <Box component="img" sx={{ height: 200, width: 200}} src="https://cdn-icons-png.flaticon.com/512/25/25666.png"></Box>
           </Grid>
         </Grid>
 
 
         <Grid container sx={{mt: 10, mx: 'auto', width: 450, textAlign: 'center'}}>
           <Grid size={6}>
-            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Registrar Compra</Button>
+            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
           </Grid>
           <Grid size={6}>
-            <Button variant="outlined" sx={{borderRadius: 3, width: 150, borderColor: '#7749F8', color: '#6610F2', fontWeight: 600, textTransform: 'none'}}>Cancelar</Button>
+            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
           </Grid>
         </Grid>
         

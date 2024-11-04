@@ -105,7 +105,7 @@ function userHistory() {
             <List variant="outlined">
                 {activeItems.map((item, index) => (
                     <ListItem key={index}>
-                        <ListItemButton  component={Link} to={'/userHistory/purchaseData'} sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)'}}>
+                        <ListItemButton  component={Link} to={`/userHistory/purchaseData/Compra${index + 1}`} sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)'}}>
                             <ListItemText primary={item} />
                             <Typography sx={{px: 2, py: 1, borderRadius: 20, fontSize: 12, color: 'white', backgroundColor: '#4DAF62'}}>Pendiente</Typography>
                         </ListItemButton>
