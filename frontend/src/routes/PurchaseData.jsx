@@ -1,7 +1,8 @@
-import { useState, useReact } from 'react';
-import { useParams } from 'react-router-dom';
-import { Container, styled, Button, Typography, Box }from '@mui/material';
+import { useState, useEffect, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Container, styled, Button, Typography, Box, Link }from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import CurrentUserContext from '../Context';
 
 const StyledTypography = styled(Typography)(({ }) => ({
     boxShadow: '0 1px 5px #7749F8',
@@ -14,8 +15,31 @@ const StyledTypography = styled(Typography)(({ }) => ({
 }));
 
 function PurchaseData() { 
-    const[rol,setRol] = useState('Encargado'); 
+    const navigate = useNavigate();
     const { id } = useParams();
+
+    const {
+      currentUser
+    } = useContext(CurrentUserContext);
+
+    function backButton(){
+      return(
+          <Button onClick={() => {navigate(-1);}} variant="contained" sx={{m: 'auto', borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Volver</Button>
+      );
+   }
+
+    function renderButtons(){
+      return(
+        <>
+          <Grid size={6}>
+            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
+          </Grid>
+          <Grid size={6}>
+            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
+          </Grid>
+        </>
+      );
+   }
 
     function renderInput(){
         return(
@@ -51,7 +75,7 @@ function PurchaseData() {
             <Typography variant="body1" sx={{px: 2, py: 1}}>Cantidad:</Typography>
             <StyledTypography variant="body1" >Cantidad Elegida</StyledTypography>
 
-            {rol !== 'Usuario' && renderInput()}
+            {currentUser.rol !== 'Usuario' && renderInput()}
 
           </Grid>
           <Grid size={4}>
@@ -60,14 +84,8 @@ function PurchaseData() {
           </Grid>
         </Grid>
 
-
         <Grid container sx={{mt: 10, mx: 'auto', width: 450, textAlign: 'center'}}>
-          <Grid size={6}>
-            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
-          </Grid>
-          <Grid size={6}>
-            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
-          </Grid>
+          {currentUser.rol !== 'Usuario' ? renderButtons() : backButton()}
         </Grid>
         
       </Container> 

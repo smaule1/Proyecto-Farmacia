@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { TextField, Container, styled, Button, Select, MenuItem, ListItem, List, ListItemText, Box, Pagination, Typography, ListItemButton, Link}from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import CurrentUserContext from '../Context';
 
 const StyledTextField = styled(TextField)(({ }) => ({
     '& .MuiOutlinedInput-root':{
@@ -92,6 +93,11 @@ function userHistory() {
     const itemsPerPage = 4;
     const amountOfPages = Math.ceil(testData.length / itemsPerPage);
 
+    const {
+        currentUser,
+        serCurrentUser
+    } = useContext(CurrentUserContext);
+
     const statusColors = {
         Pendiente: '#398EA1', 
         Aprobado: '#4DAF62', 
@@ -148,6 +154,7 @@ function userHistory() {
 
     useEffect(() => {
         order();
+        console.log(currentUser);
     }, []);
 
     useEffect(() => {

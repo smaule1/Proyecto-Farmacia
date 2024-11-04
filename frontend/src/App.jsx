@@ -20,15 +20,15 @@ function App() {
           currentUser,
           setCurrentUser
         }}
-      >
-        <NavBar rol={'Usuario'}/>
+      >   
+      {currentUser !== null && <NavBar rol={currentUser.rol}/>}
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route path="/temp" element={<Temp />} />
+            <Route path="/purchase" element={<Purchase />} />
+            <Route path="/userHistory" element={<UserHistory />} />
+            <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />
           </Route>
-          <Route path="/purchase" element={<Purchase />} />
-          <Route path="/userHistory" element={<UserHistory />} />
-          <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />
           <Route path="/register" element={<Register />} />
           <Route path="/*" element={<Register />} />
           <Route path="/login" element={<Login />} />
