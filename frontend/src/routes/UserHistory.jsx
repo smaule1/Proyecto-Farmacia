@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { TextField, Container, styled, Button, Select, MenuItem, ListItem, List, ListItemText, Box, Pagination, Typography, ListItemButton, Link}from '@mui/material';
 import Grid from '@mui/material/Grid2';
 
@@ -62,23 +62,98 @@ const CustomPagination = styled(Pagination)(({ }) => ({
 }));
 
 function userHistory() {  
-    const [state, setState] = React.useState('');
-    const [page, setDataPage] = React.useState(1);
-    const itemsPerPage = 4;
+    const [state, setState] = useState('Pendiente');
+    const [page, setDataPage] = useState(1);
+    const [testData, setTestData] = useState([
+        {
+            name: "Ala",
+            estado: "Rechazado"
+        },
+        {
+            name: "Compra1",
+            estado: "Pendiente"
+        },
+        {
+            name: "Compra3",
+            estado: "Pendiente"
+        },
+        {
+            name: "Compra2",
+            estado: "Aprobado"
+        },
+        {
+            name: "Ala2",
+            estado: "Rechazado"
+        },
 
-    const testData = Array.from({ length: 20 }, (_, index) => `Compra ${index + 1}`);
+    ]);
+    const [activeItems, setActiveItems] = useState(null);
+
+    const itemsPerPage = 4;
     const amountOfPages = Math.ceil(testData.length / itemsPerPage);
 
-    const activeItems = testData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+    const statusColors = {
+        Pendiente: '#398EA1', // Naranja
+        Aprobado: '#4DAF62',  // Verde
+        Rechazado: '#923335'  // Rojo
+      };
 
-    const handleChange = (newState) => {
+      const statusOrder = {
+        Pendiente: 1,
+        Aprobado: 2,
+        Rechazado: 3
+      };
+
+    const order = () => {
+        testData.sort(function (a, b) {
+            if (a.estado === b.estado){
+                return (a.name > b.name) ? 1 : -1;
+            } else {
+                return statusOrder[a.estado] - statusOrder[b.estado];
+            }
+        });
+        setTestData(testData);
+    };
+
+    const changePage = () => {
+        const newActiveItems = testData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+        setActiveItems(newActiveItems);
+    };
+
+    const handleState = (newState) => {
+        switch (newState){
+            case 'Aprobado':
+                statusOrder.Aprobado = 1;
+                statusOrder.Pendiente = 2;
+                statusOrder.Rechazado = 3;
+                break;
+            case 'Pendiente':
+                statusOrder.Pendiente = 1;
+                statusOrder.Aprobado = 2;
+                statusOrder.Rechazado = 3;
+                break;
+            default:
+                statusOrder.Rechazado = 1;
+                statusOrder.Pendiente = 2;
+                statusOrder.Aprobado = 3;
+                break;
+        }
+        order();
         setState(newState);
     };
 
     const handlePage = (event, newPage) => {
         setDataPage(newPage);
-        console.log(page);
     };
+
+    useEffect(() => {
+        order();
+        }, []);
+
+    useEffect(() => {
+        changePage();
+      }, [state,page]);
+
   return (
     <div>      
         <Container maxWidth="lg" sx={{mt: 5}}>
@@ -89,7 +164,7 @@ function userHistory() {
           <Grid size={3} >
             <h4 style={{marginBottom: 20}}>Filtro de búsqueda</h4>
             <StyledTextField id="outlined-required" placeholder="Número de Factura"/>
-            <CustomSelect value={state} id="demo-simple-select" placeholder="Estado" onChange={(newValue) => {handleChange(newValue.target.value)}} displayEmpty>
+            <CustomSelect value={state} id="demo-simple-select" placeholder="Estado" onChange={(newValue) => {handleState(newValue.target.value)}} displayEmpty>
                 <MenuItem value="" disabled>Estado</MenuItem>
                 <MenuItem value={'Pendiente'}>Pendiente</MenuItem>
                 <MenuItem value={'Aprobado'}>Aprobado</MenuItem>
@@ -103,14 +178,14 @@ function userHistory() {
         </Grid>
           <Grid size={8}>
             <List variant="outlined">
-                {activeItems.map((item, index) => (
+                {activeItems ? activeItems.map((item, index) => (
                     <ListItem key={index}>
-                        <ListItemButton  component={Link} to={`/userHistory/purchaseData/Compra${index + 1}`} sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)'}}>
-                            <ListItemText primary={item} />
-                            <Typography sx={{px: 2, py: 1, borderRadius: 20, fontSize: 12, color: 'white', backgroundColor: '#4DAF62'}}>Pendiente</Typography>
+                        <ListItemButton  component={Link} to={`/userHistory/purchaseData/${item.name}`} sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)'}}>
+                            <ListItemText primary={item.name} />
+                            <Typography sx={{px: 2, py: 1, borderRadius: 20, fontSize: 12, color: 'white', backgroundColor: statusColors[item.estado]}}>{item.estado}</Typography>
                         </ListItemButton>
                     </ListItem>
-                ))}
+                )): (<p>Cargando datos...</p>)}
             </List>
           </Grid>
         </Grid>
