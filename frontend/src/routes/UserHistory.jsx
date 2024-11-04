@@ -148,7 +148,7 @@ function userHistory() {
 
     useEffect(() => {
         order();
-        }, []);
+    }, []);
 
     useEffect(() => {
         changePage();
@@ -170,7 +170,7 @@ function userHistory() {
                 <MenuItem value={'Aprobado'}>Aprobado</MenuItem>
                 <MenuItem value={'Rechazado'}>Rechazado</MenuItem>
             </CustomSelect>
-            <Button variant="contained" sx={{borderRadius: 3, width: 100, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aplicar</Button>
+            <Button variant="contained" sx={{borderRadius: 3, width: 100, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none', display: 'none'}}>Aplicar</Button>
           </Grid>
           <Grid xs={1}>
           <Box sx={{ width: '2px',  backgroundColor: 'grey.400', height: '100%'}}/>

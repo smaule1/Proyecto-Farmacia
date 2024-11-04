@@ -13,3 +13,13 @@ export const registrar = async (req, res) => {
         res.status(500).json({success:false, message: error.message});  
     }
 };
+
+export const getMedicines = async (req, res) => {
+    try {
+        const medicines = await Medicine.find({}, 'nombre');
+        res.send(medicines);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las farmacias');
+    }
+}

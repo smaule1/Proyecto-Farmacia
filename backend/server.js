@@ -23,8 +23,8 @@ app.use(cookieParser());
 
 
 app.use('/api/users', userRoutes);
-app.use('/medicines', medicineRoutes);
-app.use('/pharmacies', pharmacyRoutes);
+app.use('/api/medicines', medicineRoutes);
+app.use('/api/pharmacies', pharmacyRoutes);
 app.use('/purchases', purchaseRoutes);
 
 app.listen(5000, async ()=>{
