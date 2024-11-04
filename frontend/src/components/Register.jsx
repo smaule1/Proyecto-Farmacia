@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import CurrentUserContext from '../Context';
 
 
@@ -80,7 +80,7 @@ function Register() {
 
 
   if(currentUser){ //El usario ya está logeado
-    return <Navigate to="/Temp" />; //TODO: change temp
+    return <Navigate to="/temp" />; //TODO: change temp
   }
 
   return (
@@ -118,7 +118,8 @@ function Register() {
                 </div>
               </form>
               <div className="mt-3">
-                <p>¿Ya tienes una cuenta? Inicia Sesión</p>
+                <p>¿Ya tienes una cuenta? <Link to='/login'>Inicia Sesión</Link></p>
+                
               </div>
               <div className="mt-3">
                 {alertMessage && <div className="alert alert-danger row h-20" role="alert">{alertMessage}</div>}

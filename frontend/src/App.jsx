@@ -30,7 +30,7 @@ function App() {
             <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />
           </Route>
           <Route path="/register" element={<Register />} />
-          <Route path="/*" element={<Register />} />
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </CurrentUserContext.Provider>
