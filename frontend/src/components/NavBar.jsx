@@ -2,8 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import CurrentUserContext from '../Context';
 
-function NavBar({ rol }) {
-  const [name, setName] = useState('');
+function NavBar() {  
   const navigate = useNavigate();
 
   console.log('navbar');
@@ -11,11 +10,7 @@ function NavBar({ rol }) {
   const {
     currentUser,
     setCurrentUser
-  } = useContext(CurrentUserContext);
-
-  function renderInput() {
-    
-  }
+  } = useContext(CurrentUserContext); 
 
   function renderCorrectNavBar() {
     return (
@@ -24,10 +19,6 @@ function NavBar({ rol }) {
       </li>
     )
   }
-  useEffect(() => {
-    rol !== 'Usuario' ? setName('Solicitudes Pendientes') : setName('Historial');
-  }, [setName, rol]);
-
   
   const logout = async () => {  
 
@@ -38,7 +29,7 @@ function NavBar({ rol }) {
         credentials: 'include'
       });      
       if (response.ok){        
-        setCurrentUser('');
+        setCurrentUser(null);
         navigate('/login');
       }            
     } catch (error) {
@@ -59,15 +50,15 @@ function NavBar({ rol }) {
           </button>
           <div className="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul className="navbar-nav flex-grow-1">
-              <li className="nav-item" id="registro">
-                <Link className="nav-link text-dark" to='/temp'>Home</Link>
-              </li>
-              {rol === 'Usuario' && renderCorrectNavBar()}
               <li className="nav-item">
-                <Link className="nav-link text-dark" to="/userHistory">{name}</Link>
+                {currentUser && <Link className="nav-link text-dark" to='/temp'>Home</Link>}
+              </li>
+              {currentUser && currentUser.rol === 'Usuario' && renderCorrectNavBar()}
+              <li className="nav-item">
+                {currentUser && <Link className="nav-link text-dark" to="/userHistory">{currentUser.rol !== 'Usuario' ? 'Solicitudes Pendientes' : 'Historial'}</Link>}
               </li>
               <li className="nav-item">
-                <button className="nav-link text-dark" onClick={logout}>Cerrar Sesión</button>
+                {currentUser && <button className="nav-link text-dark" onClick={logout}>Cerrar Sesión</button>}
               </li>
             </ul>
           </div>

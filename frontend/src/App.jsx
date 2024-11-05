@@ -21,7 +21,7 @@ function App() {
           setCurrentUser
         }}
       >   
-      {currentUser !== null && <NavBar rol={currentUser.rol}/>}
+      <NavBar/>
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route path="/*" element={<Temp />} />
