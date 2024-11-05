@@ -131,7 +131,8 @@ function Purchase() {
       });
 
       if (response.ok) {
-        alert('Compra registrada correctamente');             
+        alert('Compra registrada correctamente');    
+        navigate("/temp");              
       } else {
         alert('Error al guardar la compra');      
       }     
@@ -235,7 +236,7 @@ function Purchase() {
             sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Registrar Compra</Button>
           </Grid>
           <Grid size={6}>
-            <Button variant="outlined" onClick={() => {navigate("/Temp")}} 
+            <Button variant="outlined" onClick={() => {navigate("/temp")}} 
             sx={{borderRadius: 3, width: 150, borderColor: '#7749F8', color: '#6610F2', fontWeight: 600, textTransform: 'none'}}>Cancelar</Button>
           </Grid>
         </Grid>
