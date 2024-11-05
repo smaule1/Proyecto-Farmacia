@@ -1,23 +1,52 @@
-import { useState, useEffect} from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import CurrentUserContext from '../Context';
 
-function NavBar({rol}) {
-  const[name, setName] = useState('');
-  
-  function renderInput(){
-    rol !== 'Usuario' ? setName('Solicitudes Pendientes') : setName('Historial');
+function NavBar({ rol }) {
+  const [name, setName] = useState('');
+  const navigate = useNavigate();
+
+  console.log('navbar');
+
+  const {
+    currentUser,
+    setCurrentUser
+  } = useContext(CurrentUserContext);
+
+  function renderInput() {
+    
   }
 
-  function renderCorrectNavBar(){
-    return(
+  function renderCorrectNavBar() {
+    return (
       <li className="nav-item">
         <Link className="nav-link text-dark" to="/purchase">Registrar Compra</Link>
       </li>
     )
   }
   useEffect(() => {
-    renderInput();
-  });
+    rol !== 'Usuario' ? setName('Solicitudes Pendientes') : setName('Historial');
+  }, [setName, rol]);
+
+  
+  const logout = async () => {  
+
+    const url = `/api/users/logout`;      
+    try {
+      const response = await fetch(url, {
+        method: "GET",        
+        credentials: 'include'
+      });      
+      if (response.ok){        
+        setCurrentUser('');
+        navigate('/login');
+      }            
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
 
   return (
     <header>
@@ -33,9 +62,12 @@ function NavBar({rol}) {
               <li className="nav-item" id="registro">
                 <Link className="nav-link text-dark" to='/temp'>Home</Link>
               </li>
-                { rol === 'Usuario' && renderCorrectNavBar()}
+              {rol === 'Usuario' && renderCorrectNavBar()}
               <li className="nav-item">
                 <Link className="nav-link text-dark" to="/userHistory">{name}</Link>
+              </li>
+              <li className="nav-item">
+                <button className="nav-link text-dark" onClick={logout}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
