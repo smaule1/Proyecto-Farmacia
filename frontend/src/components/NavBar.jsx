@@ -5,8 +5,6 @@ import CurrentUserContext from '../Context';
 function NavBar() {  
   const navigate = useNavigate();
 
-  console.log('navbar');
-
   const {
     currentUser,
     setCurrentUser

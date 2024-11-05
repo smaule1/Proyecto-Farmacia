@@ -64,9 +64,12 @@ const CustomPagination = styled(Pagination)(({ }) => ({
 }));
 
 function userHistory() {  
+    const [date, setDate] = useState(null);
+    const [sequence, setSequence] = useState(0);
     const [state, setState] = useState('Pendiente');
     const [page, setDataPage] = useState(1);
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [activeItems, setActiveItems] = useState([]);
     const [statusOrder, setstatusOrder] = useState({
         Pendiente: 1,
@@ -134,6 +137,32 @@ function userHistory() {
         setDataPage(newPage);
     };
 
+    const handleDate = (value) => {
+        setDate(value);
+      };
+
+    const handleSequence = (value) => {
+        const numericValue = Number(value.target.value);
+        setSequence(numericValue);
+    };
+
+    const handleFiltros = () => {
+
+        setFilteredData(data);
+
+        if(date !== null){
+            console.log(date);
+            const filterData = [filteredData.find(purchase => purchase.fecha === date)];
+            (filterData[0]) ?  setData(filterData) : setData([]);
+        }
+        if(sequence !== 0){
+            console.log(data);
+            const filterData = [filteredData.find(purchase => purchase.numeroFactura === sequence)];
+            (filterData[0]) ?  setData(filterData) : setData([]);
+        }
+    };
+
+
     useEffect(() => {
         async function fetchPurchasesById() {
           const url = `/api/purchases/getPurchaseByUser/${currentUser._id}`;
@@ -144,6 +173,8 @@ function userHistory() {
             }
             const json = await response.json();
             setData(json);
+            setFilteredData(json);
+
           } catch (error) {
             console.error(error.message);
           }
@@ -158,6 +189,7 @@ function userHistory() {
             }
             const json = await response.json();
             setData(json);
+            setFilteredData(json);
 
           } catch (error) {
             console.error(error.message);
@@ -165,8 +197,13 @@ function userHistory() {
         };
       
         (currentUser.rol === 'Usuario') ? fetchPurchasesById() : fetchPendingPurchases();
+
       }, []);
 
+
+    useEffect(() => {
+        handleFiltros();
+    }, [date, sequence]);
 
     useEffect(() => {
         order();
@@ -183,9 +220,9 @@ function userHistory() {
           <Grid size={3} >
             <h4 style={{marginBottom: 20}}>Filtro de búsqueda</h4>
 
-            { currentUser.rol === 'Usuario' && <StyledTextField id="outlined-required" placeholder="Número de Factura"/>}
+            { currentUser.rol === 'Usuario' && <StyledTextField id="outlined-required" onChange={handleSequence} placeholder="Número de Factura"/>}
 
-            <DatePickerRequest StyledTextField={StyledTextField}/>
+            <DatePickerRequest handleDate={handleDate} StyledTextField={StyledTextField}/>
             <CustomSelect value={state} id="demo-simple-select" placeholder="Estado" onChange={(newValue) => {handleState(newValue.target.value)}} displayEmpty>
                 <MenuItem value="" disabled>Estado</MenuItem>
                 <MenuItem value={'Pendiente'}>Pendiente</MenuItem>
@@ -207,7 +244,7 @@ function userHistory() {
                             <Typography sx={{px: 2, py: 1, borderRadius: 20, fontSize: 12, color: 'white', backgroundColor: statusColors[item.estado]}}>{item.estado}</Typography>
                         </ListItemButton>
                     </ListItem>
-                )): (<p>No hay compras registradas</p>)}
+                )): (<p>No se encontraron compras</p>)}
             </List>
           </Grid>
         </Grid>
