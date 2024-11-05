@@ -12,3 +12,37 @@ export const registrar = async (req, res) => {
         res.status(500).json({success:false, message: error.message});  
     }
 };
+
+export const getPurchases = async (req, res) => {
+    try {
+        const purchases = await Purchase.find({estado: 'Pendiente'}, 'numeroFactura estado');
+        res.send(purchases);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las farmacias');
+    }
+}
+
+export const getPurchasesByUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const purchases = await Purchase.find({cliente: id}, 'numeroFactura estado');
+        res.send(purchases);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las farmacias');
+    }
+}
+
+export const getPurchasesById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const purchases = await Purchase.findById(id);
+        res.send(purchases);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las farmacias');
+    }
+}

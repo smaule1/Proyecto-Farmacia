@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { TextField, Container, styled, Button, Select, MenuItem, ListItem, List, ListItemText, Box, Pagination, Typography, ListItemButton, Link}from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import CurrentUserContext from '../Context';
+import DatePickerRequest from '../components/DatePickerRequest';
 
 const StyledTextField = styled(TextField)(({ }) => ({
     '& .MuiOutlinedInput-root':{
@@ -65,37 +66,19 @@ const CustomPagination = styled(Pagination)(({ }) => ({
 function userHistory() {  
     const [state, setState] = useState('Pendiente');
     const [page, setDataPage] = useState(1);
-    const [testData, setTestData] = useState([
-        {
-            name: "Ala",
-            estado: "Rechazado"
-        },
-        {
-            name: "Compra1",
-            estado: "Pendiente"
-        },
-        {
-            name: "Compra3",
-            estado: "Pendiente"
-        },
-        {
-            name: "Compra2",
-            estado: "Aprobado"
-        },
-        {
-            name: "Ala2",
-            estado: "Rechazado"
-        },
-
-    ]);
-    const [activeItems, setActiveItems] = useState(null);
+    const [data, setData] = useState([]);
+    const [activeItems, setActiveItems] = useState([]);
+    const [statusOrder, setstatusOrder] = useState({
+        Pendiente: 1,
+        Aprobado: 2,
+        Rechazado: 3
+      });
 
     const itemsPerPage = 4;
-    const amountOfPages = Math.ceil(testData.length / itemsPerPage);
+    const amountOfPages = Math.ceil(data.length / itemsPerPage) ;
 
     const {
-        currentUser,
-        serCurrentUser
+        currentUser
     } = useContext(CurrentUserContext);
 
     const statusColors = {
@@ -104,47 +87,46 @@ function userHistory() {
         Rechazado: '#923335' 
       };
 
-      const statusOrder = {
-        Pendiente: 1,
-        Aprobado: 2,
-        Rechazado: 3
-      };
-
     const order = () => {
-        testData.sort(function (a, b) {
+        data.sort(function (a, b) {
             if (a.estado === b.estado){
                 return (a.name > b.name) ? 1 : -1;
             } else {
                 return statusOrder[a.estado] - statusOrder[b.estado];
             }
         });
-        setTestData(testData);
+        setData(data);
     };
 
     const changePage = () => {
-        const newActiveItems = testData.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+        const newActiveItems = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
         setActiveItems(newActiveItems);
     };
 
     const handleState = (newState) => {
         switch (newState){
             case 'Aprobado':
-                statusOrder.Aprobado = 1;
-                statusOrder.Pendiente = 2;
-                statusOrder.Rechazado = 3;
+                setstatusOrder({
+                    Pendiente: 2,
+                    Aprobado: 1,
+                    Rechazado: 3
+                })   
                 break;
             case 'Pendiente':
-                statusOrder.Pendiente = 1;
-                statusOrder.Aprobado = 2;
-                statusOrder.Rechazado = 3;
+                setstatusOrder({
+                    Pendiente: 1,
+                    Aprobado: 2,
+                    Rechazado: 3
+                })
                 break;
             default:
-                statusOrder.Rechazado = 1;
-                statusOrder.Pendiente = 2;
-                statusOrder.Aprobado = 3;
+                setstatusOrder({
+                    Pendiente: 2,
+                    Aprobado: 3,
+                    Rechazado: 1
+                })
                 break;
         }
-        order();
         setState(newState);
     };
 
@@ -153,13 +135,43 @@ function userHistory() {
     };
 
     useEffect(() => {
-        order();
-        console.log(currentUser);
-    }, []);
+        async function fetchPurchasesById() {
+          const url = `/api/purchases/getPurchaseByUser/${currentUser._id}`;
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+            const json = await response.json();
+            setData(json);
+          } catch (error) {
+            console.error(error.message);
+          }
+        };
+    
+        async function fetchPendingPurchases() {
+          const url = `/api/purchases/getAll`;
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+            const json = await response.json();
+            setData(json);
+
+          } catch (error) {
+            console.error(error.message);
+          }
+        };
+      
+        (currentUser.rol === 'Usuario') ? fetchPurchasesById() : fetchPendingPurchases();
+      }, []);
+
 
     useEffect(() => {
+        order();
         changePage();
-      }, [state,page]);
+      }, [state,data,page]);
 
   return (
     <div>      
@@ -170,14 +182,17 @@ function userHistory() {
         <Grid container spacing={5} sx={{mt: 3, mx: 'auto', width: '100%', textAlign: 'center'}}>
           <Grid size={3} >
             <h4 style={{marginBottom: 20}}>Filtro de búsqueda</h4>
-            <StyledTextField id="outlined-required" placeholder="Número de Factura"/>
+
+            { currentUser.rol === 'Usuario' && <StyledTextField id="outlined-required" placeholder="Número de Factura"/>}
+
+            <DatePickerRequest StyledTextField={StyledTextField}/>
             <CustomSelect value={state} id="demo-simple-select" placeholder="Estado" onChange={(newValue) => {handleState(newValue.target.value)}} displayEmpty>
                 <MenuItem value="" disabled>Estado</MenuItem>
                 <MenuItem value={'Pendiente'}>Pendiente</MenuItem>
                 <MenuItem value={'Aprobado'}>Aprobado</MenuItem>
                 <MenuItem value={'Rechazado'}>Rechazado</MenuItem>
             </CustomSelect>
-            <Button variant="contained" sx={{borderRadius: 3, width: 100, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none', display: 'none'}}>Aplicar</Button>
+            <Button variant="contained" sx={{borderRadius: 3, width: 100, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aplicar</Button>
           </Grid>
           <Grid xs={1}>
           <Box sx={{ width: '2px',  backgroundColor: 'grey.400', height: '100%'}}/>
@@ -185,14 +200,14 @@ function userHistory() {
         </Grid>
           <Grid size={8}>
             <List variant="outlined">
-                {activeItems ? activeItems.map((item, index) => (
+                {(activeItems.length !== 0) ? activeItems.map((item, index) => (
                     <ListItem key={index}>
-                        <ListItemButton  component={Link} to={`/userHistory/purchaseData/${item.name}`} sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)'}}>
-                            <ListItemText primary={item.name} />
+                        <ListItemButton  component={Link} to={`/userHistory/purchaseData/${item._id}`} sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)'}}>
+                            <ListItemText primary={"Numero de Factura: " + item.numeroFactura} />
                             <Typography sx={{px: 2, py: 1, borderRadius: 20, fontSize: 12, color: 'white', backgroundColor: statusColors[item.estado]}}>{item.estado}</Typography>
                         </ListItemButton>
                     </ListItem>
-                )): (<p>Cargando datos...</p>)}
+                )): (<p>No hay compras registradas</p>)}
             </List>
           </Grid>
         </Grid>

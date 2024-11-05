@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use('/api/users', userRoutes);
 app.use('/api/medicines', medicineRoutes);
 app.use('/api/pharmacies', pharmacyRoutes);
-app.use('/purchases', purchaseRoutes);
+app.use('/api/purchases', purchaseRoutes);
 
 app.listen(5000, async ()=>{
 	console.log("Server started at http://localhost:5000");  

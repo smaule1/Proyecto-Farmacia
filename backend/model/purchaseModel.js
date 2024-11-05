@@ -1,7 +1,4 @@
 import mongoose from "mongoose";
-import User from './userModel.js';
-import Medicine from './medicineModel.js';
-import Pharmacy from './pharmacyModel.js';
 
 //Enum
 const Estado = {
@@ -16,6 +13,8 @@ Object.freeze(Estado);
 const purchaseSchema = new mongoose.Schema({
     medicamento: {type: mongoose.Types.ObjectId, ref:'medicines', required:true},
     cantidad: {type: Number, required:true},
+    fecha: {type: Date, required:true},
+    numeroFactura: {type: Number, required:true},
     imgFactura: {
       data: { type: Buffer, required: true },
       contentType: { type: String, required: true }

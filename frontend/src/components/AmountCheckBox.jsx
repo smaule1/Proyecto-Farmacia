@@ -1,10 +1,10 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { InputAdornment, IconButton }from '@mui/material';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-function AmountCheckBox({CustomCheckBox}) {  
-  const [value, setValue] = React.useState('');
+function AmountCheckBox({handleQuantity, CustomCheckBox}) {  
+  const [value, setValue] = useState('');
 
   const handleIncrease = () => {
     const numberValue = Number(value);
@@ -25,6 +25,10 @@ function AmountCheckBox({CustomCheckBox}) {
       setValue('');
     }
   };
+
+  useEffect(() => {
+    handleQuantity(value);
+  }, [value]);
 
   return (
     <CustomCheckBox id="outlined-required" type="number" value={value} placeholder="Cantidad"  onChange={handleChange} slotProps={{ input: {
