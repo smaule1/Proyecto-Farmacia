@@ -24,13 +24,12 @@ function App() {
       {currentUser !== null && <NavBar rol={currentUser.rol}/>}
         <Routes>
           <Route element={<ProtectedRoute />}>
-            <Route path="/temp" element={<Temp />} />
+            <Route path="/*" element={<Temp />} />
             <Route path="/purchase" element={<Purchase />} />
             <Route path="/userHistory" element={<UserHistory />} />
             <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />
           </Route>
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />          
           <Route path="/login" element={<Login />} />
         </Routes>
       </CurrentUserContext.Provider>
