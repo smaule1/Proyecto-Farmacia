@@ -59,8 +59,17 @@ function PurchaseData() {
           if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
           }
-          const json = await response.json();
-          setData(json);
+          const jsonPurchase = await response.json();
+
+          const urlFarmacia = `/api/pharmacies/getPharmacyById/${jsonPurchase.farmacia}`;
+          const responseFarmacia = await fetch(urlFarmacia);
+          if (!responseFarmacia.ok) {
+            throw new Error(`Response status: ${responseFarmacia.status}`);
+          }
+          const jsonFarmacia = await responseFarmacia.json();
+          
+          jsonPurchase.farmacia = jsonFarmacia.nombre;
+          setData(jsonPurchase);
         } catch (error) {
           console.error(error.message);
         }
