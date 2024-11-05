@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import CurrentUserContext from '../Context';
 
 function Login() {
@@ -96,7 +96,7 @@ return (
               </div>
             </form>
             <div className="mt-3">
-              <p>¿Ya tienes una cuenta? Inicia Sesión</p>
+              <p>¿No tienes una cuenta? <Link to='/register'>Registrarse</Link> </p>              
             </div>
             <div className="mt-3">
               {alertMessage && <div className="alert alert-danger row h-20" role="alert">{alertMessage}</div>}

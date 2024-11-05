@@ -16,7 +16,7 @@ export const registrar = async (req, res) => {
         await user.save();
         const token = createToken(user);
         res.cookie('userInfo', token, { httpOnly: true, maxAge: MAX_AGE, sameSite: 'strict' }) //maxAge 1 hora
-        res.status(200).json({ data: { user } });
+        res.status(200).json({ data: { user } });            
     } catch (error) {
         const errorList = handleMongooseErros(error);
         res.status(400).json({ errors: errorList });
@@ -48,11 +48,8 @@ export const login = async (req, res) => {
         }
     }
 
-
-
 //Credential Authentication
 const { email, password } = req.body;
-
 //Validation
 if (!email || !password) {
     res.status(400).json({ errors: [{ message: 'Parámetros insuficientes.' }] });
@@ -74,12 +71,12 @@ if (!auth) {
 const token = createToken(user);
 res.cookie('userInfo', token, { httpOnly: true, maxAge: MAX_AGE, sameSite: 'strict' }) //maxAge 1 hora
 res.status(200).json({ data: { user } });
-
 };
 
-export function logout(req, res) {
-    res.cookie('userInfo', '', { maxAge: 1 });
-}
+export const logout = async (req, res) => {
+    res.cookie('userInfo', '', { maxAge: 1, httpOnly: true, sameSite: 'strict' });
+    res.sendStatus(200);    
+};
 
 
 
