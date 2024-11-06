@@ -171,6 +171,7 @@ function userHistory() {
               throw new Error(`Response status: ${response.status}`);
             }
             const json = await response.json();
+            console.log(json);
             setData(json);
             setFilteredData(json);
 
