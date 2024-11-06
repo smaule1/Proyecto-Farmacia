@@ -19,8 +19,7 @@ function PurchaseData() {
     const { id } = useParams();
 
     const [data, setData] = useState([]);
-    const [points, setPoints] = useState('');
-    const [user, setUser] = useState('');
+    const [dataUri, setDataUri] = useState(null);
     
     const {
       currentUser
@@ -103,10 +102,7 @@ function PurchaseData() {
             throw new Error(`Response status: ${responseMedicina.status}`);
           }
           const jsonMedicina = await responseMedicina.json();
-
-          setPoints(jsonMedicina.puntosUnitarios);
           jsonPurchase.medicamento = jsonMedicina.nombre;
-
 
           //Fetches client information
           const urlCliente = `/api/users/getUserNameById/${jsonPurchase.cliente}`;
@@ -115,15 +111,25 @@ function PurchaseData() {
             throw new Error(`Response status: ${responseCliente.status}`);
           }
           const jsonCliente = await responseCliente.json();
-
-          setUser(jsonCliente._id);
           jsonPurchase.cliente = jsonCliente.email;
 
 
           //Formats Date
           jsonPurchase.fecha = formatDate(jsonPurchase.fecha); 
 
-          console.log(jsonPurchase);
+          //Sets the image
+          const byteArray = new Uint8Array(jsonPurchase.imgFactura.data.data); // Convertir a un Uint8Array
+          const blob = new Blob([byteArray], { type: jsonPurchase.imgFactura.contentType });
+
+          const reader = new FileReader();
+          
+          reader.onloadend = () => {
+            const base64String = reader.result;
+            setDataUri(base64String);
+          };
+          
+          reader.readAsDataURL(blob); 
+
           setData(jsonPurchase);
 
         } catch (error) {
@@ -164,7 +170,8 @@ function PurchaseData() {
           </Grid>
           <Grid size={4}>
              <Typography variant="body1" sx={{px: 2, py: 1}}>Imagen de la factura:</Typography>
-             <Box component="img" sx={{ height: 200, width: 200}} src="https://cdn-icons-png.flaticon.com/512/25/25666.png"></Box>
+             {dataUri && <Box component="img" sx={{ width: 200, height: 250}} src={dataUri}></Box>}
+             
           </Grid>
         </Grid>
 
