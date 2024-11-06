@@ -1,10 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, ListItem, List, ListItemText, Typography, ListItemButton, Link}from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import CurrentUserContext from '../Context';
 
 
 function Home() {  
+    const navigate = useNavigate();
     const [activeItems, setActiveItems] = useState([]);
 
     const {
@@ -65,7 +67,7 @@ function Home() {
             <List variant="outlined">
                 {(activeItems.length !== 0) ? activeItems.map((item, index) => (
                     <ListItem key={index}>
-                        <ListItemButton  component={Link} to={`/userHistory/purchaseData/${item._id}`} sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)'}}>
+                        <ListItemButton  onClick={() => { navigate(`/userHistory/purchaseData/${item._id}`) }} sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)'}}>
                             <ListItemText primary={"Numero de Factura: " + item.numeroFactura} />
                             <Typography sx={{px: 2, py: 1, borderRadius: 20, fontSize: 12, color: 'white', backgroundColor: statusColors[item.estado]}}>{item.estado}</Typography>
                         </ListItemButton>
