@@ -34,6 +34,17 @@ export const setBeneficio = async (req, res) => {
     }
 };
 
+export const getMedicineById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const medicines = await Medicine.findById(id);
+        res.send(medicines);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las medicinas');
+    }
+}
+
 export const getMedicines = async (req, res) => {
     try {
         const medicines = await Medicine.find({}, 'nombre');

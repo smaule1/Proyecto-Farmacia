@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, Suspense } from 'react';
 import { TextField, Container, styled, Button, Select, MenuItem, ListItem, List, ListItemText, Box, Pagination, Typography, ListItemButton, Link}from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import CurrentUserContext from '../Context';
@@ -64,7 +64,7 @@ const CustomPagination = styled(Pagination)(({ }) => ({
 }));
 
 function userHistory() {  
-    const [date, setDate] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(null);
     const [sequence, setSequence] = useState(0);
     const [state, setState] = useState('Pendiente');
     const [page, setDataPage] = useState(1);
@@ -138,7 +138,7 @@ function userHistory() {
     };
 
     const handleDate = (value) => {
-        setDate(value);
+        setSelectedDate(value);
       };
 
     const handleSequence = (value) => {
@@ -148,18 +148,19 @@ function userHistory() {
 
     const handleFiltros = () => {
 
-        setFilteredData(data);
+      let filterData = filteredData;
+      if(selectedDate !== null){
 
-        if(date !== null){
-            console.log(date);
-            const filterData = [filteredData.find(purchase => purchase.fecha === date)];
-            (filterData[0]) ?  setData(filterData) : setData([]);
-        }
-        if(sequence !== 0){
-            console.log(data);
-            const filterData = [filteredData.find(purchase => purchase.numeroFactura === sequence)];
-            (filterData[0]) ?  setData(filterData) : setData([]);
-        }
+        filterData = [filteredData.find(purchase => Date.parse(purchase.fecha) === Date.parse(selectedDate))];
+        console.log(filterData);
+      }
+      
+      if(sequence !== 0 && filterData[0]){
+          console.log(filterData);
+          filterData = [filterData.find(purchase => purchase.numeroFactura === sequence)];
+      }
+
+      (filterData[0]) ?  setData(filterData) : setData([]);
     };
 
 
@@ -190,6 +191,7 @@ function userHistory() {
             const json = await response.json();
             setData(json);
             setFilteredData(json);
+            
 
           } catch (error) {
             console.error(error.message);
@@ -202,8 +204,10 @@ function userHistory() {
 
 
     useEffect(() => {
+        setData(filteredData);
         handleFiltros();
-    }, [date, sequence]);
+    }, [selectedDate, sequence]);
+
 
     useEffect(() => {
         order();
@@ -220,9 +224,13 @@ function userHistory() {
           <Grid size={3} >
             <h4 style={{marginBottom: 20}}>Filtro de búsqueda</h4>
 
-            { currentUser.rol === 'Usuario' && <StyledTextField id="outlined-required" onChange={handleSequence} placeholder="Número de Factura"/>}
+            { currentUser.rol === 'Usuario' && <StyledTextField onChange={handleSequence} placeholder="Número de Factura"/>}
 
-            <DatePickerRequest handleDate={handleDate} StyledTextField={StyledTextField}/>
+            <Grid size={12}>
+              <DatePickerRequest handleDate={handleDate} StyledTextField={StyledTextField}/>
+            </Grid>
+
+          {/*https://codesandbox.io/p/sandbox/brave-mopsa-gkf6cq?file=%2Fsrc%2FDemo.tsx */}
             <CustomSelect value={state} id="demo-simple-select" placeholder="Estado" onChange={(newValue) => {handleState(newValue.target.value)}} displayEmpty>
                 <MenuItem value="" disabled>Estado</MenuItem>
                 <MenuItem value={'Pendiente'}>Pendiente</MenuItem>

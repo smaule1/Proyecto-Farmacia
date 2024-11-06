@@ -13,8 +13,8 @@ function DatePickerRequest( {handleDate, StyledTextField} ) {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          onChange={changeDate}
+        <DatePicker 
+          onAccept={changeDate}
           slots={{
             textField: (params) => (
               <StyledTextField {...params} placeholder="Fecha de compra" />
