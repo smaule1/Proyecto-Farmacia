@@ -86,8 +86,8 @@ function userHistory() {
 
     const statusColors = {
         Pendiente: '#398EA1', 
-        Aprobado: '#4DAF62', 
-        Rechazado: '#923335' 
+        Aprobada: '#4DAF62', 
+        Rechazada: '#923335' 
       };
 
     const order = () => {

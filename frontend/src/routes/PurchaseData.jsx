@@ -36,10 +36,10 @@ function PurchaseData() {
       return(
         <>
           <Grid size={6}>
-            <Button onClick={() => {corroborar('Aprobado')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
+            <Button onClick={() => {corroborar('Aprobada')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
           </Grid>
           <Grid size={6}>
-            <Button onClick={() => {corroborar('Rechazado')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
+            <Button onClick={() => {corroborar('Rechazada')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
           </Grid>
         </>
       );

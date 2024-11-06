@@ -1,35 +1,8 @@
-import { useState, useEffect, useContext, Suspense } from 'react';
-import { TextField, Container, styled, Button, Select, MenuItem, ListItem, List, ListItemText, Box, Pagination, Typography, ListItemButton, Link}from '@mui/material';
+import { useState, useEffect, useContext } from 'react';
+import { Container, ListItem, List, ListItemText, Typography, ListItemButton, Link}from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import CurrentUserContext from '../Context';
-import DatePickerRequest from '../components/DatePickerRequest';
 
-const StyledTextField = styled(TextField)(({ }) => ({
-    '& .MuiOutlinedInput-root':{
-        '& fieldset': {
-        borderColor: '#7749F8',
-        borderRadius: '10px',
-        height: 55,
-        },
-        '&:hover fieldset': {
-        borderColor: '#7749F8',
-        },
-        '&.Mui-focused fieldset': {
-        borderColor: '#7749F8',
-        },
-    },
-    '& input::placeholder':{
-    paddingLeft: 5,
-    },
-    '& input':{
-    textAlign: 'center',
-    },
-    boxShadow: '0 1px 5px #7749F8',
-    borderRadius: 10,
-    width: '100%',
-    height: 50,
-    marginBottom: 20,
-}));
 
 function Home() {  
     const [activeItems, setActiveItems] = useState([]);
@@ -40,8 +13,8 @@ function Home() {
 
     const statusColors = {
         Pendiente: '#398EA1', 
-        Aprobado: '#4DAF62', 
-        Rechazado: '#923335' 
+        Aprobada: '#4DAF62', 
+        Rechazada: '#923335' 
       };
 
     useEffect(() => {

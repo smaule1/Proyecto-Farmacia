@@ -72,10 +72,12 @@ export const corroborar = async (req, res) => {
         const purchase = await Purchase.findById(id);
         purchase.estado = estado;
         await purchase.save();
-        const user = await User.findById(purchase.cliente);
-        const medicine = await Medicine.findById(purchase.medicamento);
-        user.puntos += purchase.cantidad * medicine.puntosUnitarios;
-        await user.save();
+        if (estado === 'Aprobada'){
+            const user = await User.findById(purchase.cliente);
+            const medicine = await Medicine.findById(purchase.medicamento);
+            user.puntos += purchase.cantidad * medicine.puntosUnitarios;
+            await user.save();
+        }
         res.send(purchase);
     } catch (error) {
         console.error(error);
