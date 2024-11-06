@@ -73,3 +73,30 @@ export const getFilteredPuchases = async (req, res) => {
         res.status(500).send('Error al obtener las farmacias');
     }
 }
+
+export const corroborar = async (req, res) => {    
+    try {
+        const { id } = req.params;
+        const { estado } = req.params;
+        const purchase = await Purchase.findById(id);
+        purchase.estado = estado;
+        await purchase.save();
+        res.send(purchase);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al actualizar compra');
+    }
+};
+
+export const aprobar = async (req, res) => {    
+    try {
+        const { id } = req.params;
+        const purchase = await Purchase.findById(id);
+        purchase.estado = 'Aprobada';
+        await purchase.save();
+        res.send(purchases);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las farmacias');
+    }
+};
