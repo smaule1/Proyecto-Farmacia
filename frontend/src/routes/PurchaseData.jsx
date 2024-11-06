@@ -28,7 +28,7 @@ function PurchaseData() {
       return(
           <Button onClick={() => {navigate(-1);}} variant="contained" sx={{m: 'auto', borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Volver</Button>
       );
-   }
+    }
 
     function renderButtons(){
       return(
@@ -51,6 +51,16 @@ function PurchaseData() {
             </div>
         );
     }
+
+    function formatDate(fechaRecibida){
+      const fecha = new Date(fechaRecibida);
+      console.log(fecha.getFullYear());
+      const diaConFormato = (fecha.getDate() < 10) ? '0' + fecha.getDate() : fecha.getDate();  
+      const mes = fecha.getMonth() + 1;
+      const año = fecha.getFullYear();
+      return (año + '-' + mes + '-' + diaConFormato) ;
+    }
+
     useEffect(() => {
       async function fetchPurchasesById() {
         const url = `/api/purchases/getPurchaseById/${id}`;
@@ -75,6 +85,8 @@ function PurchaseData() {
           }
           const jsonMedicina = await responseMedicina.json();
           jsonPurchase.medicamento = jsonMedicina.nombre;
+
+          jsonPurchase.fecha = formatDate(jsonPurchase.fecha); 
 
           setData(jsonPurchase);
         } catch (error) {

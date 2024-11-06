@@ -150,13 +150,11 @@ function userHistory() {
 
       let filterData = filteredData;
       if(selectedDate !== null){
-
-        filterData = [filteredData.find(purchase => Date.parse(purchase.fecha) === Date.parse(selectedDate))];
         console.log(filterData);
+        filterData = [filteredData.find(purchase => Date.parse(purchase.fecha) === Date.parse(selectedDate))];
       }
       
       if(sequence !== 0 && filterData[0]){
-          console.log(filterData);
           filterData = [filterData.find(purchase => purchase.numeroFactura === sequence)];
       }
 
@@ -230,7 +228,6 @@ function userHistory() {
               <DatePickerRequest handleDate={handleDate} StyledTextField={StyledTextField}/>
             </Grid>
 
-          {/*https://codesandbox.io/p/sandbox/brave-mopsa-gkf6cq?file=%2Fsrc%2FDemo.tsx */}
             <CustomSelect value={state} id="demo-simple-select" placeholder="Estado" onChange={(newValue) => {handleState(newValue.target.value)}} displayEmpty>
                 <MenuItem value="" disabled>Estado</MenuItem>
                 <MenuItem value={'Pendiente'}>Pendiente</MenuItem>

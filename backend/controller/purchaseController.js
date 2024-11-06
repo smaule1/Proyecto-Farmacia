@@ -15,7 +15,7 @@ export const registrar = async (req, res) => {
 
 export const getPurchases = async (req, res) => {
     try {
-        const purchases = await Purchase.find({estado: 'Pendiente'}, 'numeroFactura estado');
+        const purchases = await Purchase.find({estado: 'Pendiente'}, 'numeroFactura fecha estado');
         res.send(purchases);
     } catch (error) {
         console.error(error);
