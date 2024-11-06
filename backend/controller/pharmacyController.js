@@ -27,9 +27,9 @@ export const getPharmacies = async (req, res) => {
 export const getPharmacyById = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(id + 'a');
+        
         const pharmacy = await Pharmacy.findById(id);
-        console.log(pharmacy);
+        
         res.status(200).json(pharmacy);
     } catch (error) {
         console.error(error);
