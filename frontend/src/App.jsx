@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import NavBar from './components/NavBar';
 import Register from './components/Register';
-import Temp from './components/Temp';
+import Home from './routes/Home';
 import Login from './components/Login';
 import ProtectedRoute from './ProtectedRoute';
 import CurrentUserContext from './Context';
@@ -25,7 +25,7 @@ function App() {
       <NavBar/>
         <Routes>
           <Route element={<ProtectedRoute />}>
-            <Route path="/*" element={<Temp />} />
+            <Route path="/*" element={<Home />} />
             <Route path="/purchase" element={<Purchase />} />
             <Route path="/userHistory" element={<UserHistory />} />
             <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />

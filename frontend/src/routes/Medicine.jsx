@@ -72,6 +72,12 @@ function Medicine() {
     setPuntos(numericValue);
   };
 
+  function backButton(){
+    return(
+        <Button onClick={() => {navigate(-1);}} variant="contained" sx={{m: 'auto', borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Volver</Button>
+    );
+  }
+
   const handleUpdate = async (event) => {
     event.preventDefault();
 
@@ -182,7 +188,7 @@ return (
             <Button variant="contained" onClick={handleUpdate} sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Actualizar</Button>
           </Grid>
           <Grid size={6}>
-            <Button variant="outlined" sx={{borderRadius: 3, width: 150, borderColor: '#7749F8', color: '#6610F2', fontWeight: 600, textTransform: 'none'}}>Cancelar</Button>
+            {backButton()}
           </Grid>
         </Grid>
 

@@ -47,26 +47,14 @@ export const getPurchasesById = async (req, res) => {
     }
 }
 
-export const getFilteredPuchases = async (req, res) => {
+export const getLastPurchasesByUser = async (req, res) => {
     try {
-        const parameter1 = req.query.param1;
-        const parameter2 = req.query.param2;
+        const { id } = req.params;
+        const purchases = await Purchase.find({cliente: id}, 'numeroFactura fecha estado')
+            .sort({ _id: -1 })
+            .limit(5);
 
-        if (parameter1 == 'null'){
-            const date = new Date(parameter2);
-            const purchases = await Purchase.find({fecha: date, cliente}, 'numeroFactura estado');
-            res.send(purchases);
-
-        } else if (parameter2 == 'null'){
-            const sequence = Number(parameter1);
-            const purchases = await Purchase.find({numeroFactura: sequence}, 'numeroFactura estado');
-            res.send(purchases);
-        } else{
-            const sequence = Number(parameter1);
-            const date = new Date(parameter2);
-            const purchases = await Purchase.find({numeroFactura: sequence, fecha: date}, 'numeroFactura estado');
-            res.send(purchases);
-        }
+        res.send(purchases);
 
     } catch (error) {
         console.error(error);
@@ -88,13 +76,14 @@ export const corroborar = async (req, res) => {
     }
 };
 
-export const aprobar = async (req, res) => {    
+
+export const getLastPurchases = async (req, res) => {
     try {
-        const { id } = req.params;
-        const purchase = await Purchase.findById(id);
-        purchase.estado = 'Aprobada';
-        await purchase.save();
+        const purchases = await Purchase.find({estado: 'Pendiente'}, 'numeroFactura fecha estado')
+            .sort({ _id: -1 })
+            .limit(5);
         res.send(purchases);
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al obtener las farmacias');
