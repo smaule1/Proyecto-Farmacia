@@ -159,7 +159,7 @@ function Purchase() {
     };
 
     async function fetchMedicines() {
-      const url = `/api/medicines/getAll`;
+      const url = `/api/medicines/getAllowed`;
       try {
         const response = await fetch(url);
         if (!response.ok) {

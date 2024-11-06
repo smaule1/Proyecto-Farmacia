@@ -36,10 +36,10 @@ function PurchaseData() {
       return(
         <>
           <Grid size={6}>
-            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
+            <Button onClick={() => {corroborar('Aprobada')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
           </Grid>
           <Grid size={6}>
-            <Button variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
+            <Button onClick={() => {corroborar('Rechazada')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
           </Grid>
         </>
       );
@@ -119,6 +119,18 @@ function PurchaseData() {
       fetchPurchasesById();
     }, []);
 
+    async function corroborar(estado) {
+      const url = `/api/purchases/corroborar/${id}-${estado}`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+        navigate(`/userHistory/purchaseData/${id}`)
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
 
   return (
     <div>      

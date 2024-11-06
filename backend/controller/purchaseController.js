@@ -62,6 +62,21 @@ export const getLastPurchasesByUser = async (req, res) => {
     }
 }
 
+export const corroborar = async (req, res) => {    
+    try {
+        const { id } = req.params;
+        const { estado } = req.params;
+        const purchase = await Purchase.findById(id);
+        purchase.estado = estado;
+        await purchase.save();
+        res.send(purchase);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al actualizar compra');
+    }
+};
+
+
 export const getLastPurchases = async (req, res) => {
     try {
         const purchases = await Purchase.find({estado: 'Pendiente'}, 'numeroFactura fecha estado')
@@ -73,4 +88,4 @@ export const getLastPurchases = async (req, res) => {
         console.error(error);
         res.status(500).send('Error al obtener las farmacias');
     }
-}
+};
