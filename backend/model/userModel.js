@@ -29,7 +29,12 @@ const userSchema = new mongoose.Schema({
     type: String, 
     enum: Object.keys(Rol), //enum valida que el rol se encuentre dentro del array de Rol
     required:true
-  }    
+  },    
+  puntos: {
+    type: Number,
+    required: true,
+    default: 0 
+  }
 });
 
 userSchema.pre('save', async function (next){
