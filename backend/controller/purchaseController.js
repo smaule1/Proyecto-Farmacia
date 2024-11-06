@@ -1,4 +1,7 @@
 import Purchase from "../model/purchaseModel.js";
+import User from '../model/userModel.js';
+import Medicine from "../model/medicineModel.js";
+import jwt from 'jsonwebtoken';
 //import mongoose from 'mongoose';
 
 export const registrar = async (req, res) => {
@@ -7,15 +10,15 @@ export const registrar = async (req, res) => {
     try {
         const purchase = new Purchase(reqBody);
         await purchase.save();
-        res.status(200).json({success:true});
+        res.status(200).json({ success: true });
     } catch (error) {
-        res.status(500).json({success:false, message: error.message});  
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
 export const getPurchases = async (req, res) => {
     try {
-        const purchases = await Purchase.find({estado: 'Pendiente'}, 'numeroFactura fecha estado');
+        const purchases = await Purchase.find({ estado: 'Pendiente' }, 'numeroFactura fecha estado');
         res.send(purchases);
     } catch (error) {
         console.error(error);
@@ -26,7 +29,7 @@ export const getPurchases = async (req, res) => {
 export const getPurchasesByUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const purchases = await Purchase.find({cliente: id}, 'numeroFactura fecha estado');
+        const purchases = await Purchase.find({ cliente: id }, 'numeroFactura fecha estado');
         res.send(purchases);
 
     } catch (error) {
@@ -50,7 +53,7 @@ export const getPurchasesById = async (req, res) => {
 export const getLastPurchasesByUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const purchases = await Purchase.find({cliente: id}, 'numeroFactura fecha estado')
+        const purchases = await Purchase.find({ cliente: id }, 'numeroFactura fecha estado')
             .sort({ _id: -1 })
             .limit(5);
 
@@ -62,13 +65,17 @@ export const getLastPurchasesByUser = async (req, res) => {
     }
 }
 
-export const corroborar = async (req, res) => {    
+export const corroborar = async (req, res) => {
     try {
         const { id } = req.params;
         const { estado } = req.params;
         const purchase = await Purchase.findById(id);
         purchase.estado = estado;
         await purchase.save();
+        const user = await User.findById(purchase.cliente);
+        const medicine = await Medicine.findById(purchase.medicamento);
+        user.puntos += purchase.cantidad * medicine.puntosUnitarios;
+        await user.save();
         res.send(purchase);
     } catch (error) {
         console.error(error);
@@ -79,7 +86,7 @@ export const corroborar = async (req, res) => {
 
 export const getLastPurchases = async (req, res) => {
     try {
-        const purchases = await Purchase.find({estado: 'Pendiente'}, 'numeroFactura fecha estado')
+        const purchases = await Purchase.find({ estado: 'Pendiente' }, 'numeroFactura fecha estado')
             .sort({ _id: -1 })
             .limit(5);
         res.send(purchases);
