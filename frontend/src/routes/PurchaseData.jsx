@@ -126,7 +126,7 @@ function PurchaseData() {
         if (!response.ok) {
           throw new Error(`Response status: ${response.status}`);
         }
-        navigate(`/userHistory/purchaseData/${id}`)
+        navigate(`/userHistory`);
       } catch (error) {
         console.error(error.message);
       }
