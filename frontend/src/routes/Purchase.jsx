@@ -90,15 +90,20 @@ function Purchase() {
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      console.log(file);
       setFileName(file.name);
       const reader = new FileReader();
-      reader.readAsDataURL(file);
+
       reader.onloadend = () => {
         setFile({
-          data: reader.result, // base64
+          data: reader.result.split(',')[1], // base64
           contentType: file.type,
         });
       };
+      
+
+      reader.readAsDataURL(file);
+
     }
   };
 

@@ -92,48 +92,46 @@ function UserHistory() {
     Rechazada: '#923335'
   };
 
-  const order = () => {
-    data.sort(function (a, b) {
-      if (a.estado === b.estado) {
-        return (a.name > b.name) ? 1 : -1;
-      } else {
-        return statusOrder[a.estado] - statusOrder[b.estado];
-      }
-    });
-    setData(data);
-  };
+    const order = () => {
+        data.sort(function (a, b) {
+          return statusOrder[a.estado] - statusOrder[b.estado];
+        });
+        setData(data);
+    };
 
-  const changePage = () => {
-    const newActiveItems = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-    setActiveItems(newActiveItems);
-  };
+    const changePage = () => {
+    
+        const newActiveItems = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+        setActiveItems(newActiveItems);
+    };
 
-  const handleState = (newState) => {
-    switch (newState) {
-      case 'Aprobado':
-        setstatusOrder({
-          Pendiente: 2,
-          Aprobado: 1,
-          Rechazado: 3
-        })
-        break;
-      case 'Pendiente':
-        setstatusOrder({
-          Pendiente: 1,
-          Aprobado: 2,
-          Rechazado: 3
-        })
-        break;
-      default:
-        setstatusOrder({
-          Pendiente: 2,
-          Aprobado: 3,
-          Rechazado: 1
-        })
-        break;
-    }
-    setState(newState);
-  };
+    const handleState = (newState) => {
+      console.log(newState);
+        switch (newState){
+            case 'Aprobado':
+                setstatusOrder({
+                    Pendiente: 2,
+                    Aprobada: 1,
+                    Rechazada: 3
+                })   
+                break;
+            case 'Pendiente':
+                setstatusOrder({
+                    Pendiente: 1,
+                    Aprobada: 2,
+                    Rechazada: 3
+                })
+                break;
+            default:
+                setstatusOrder({
+                    Pendiente: 2,
+                    Aprobada: 3,
+                    Rechazada: 1
+                })
+                break;
+        }
+        setState(newState);
+    };
 
   const handlePage = (event, newPage) => {
     setDataPage(newPage);
@@ -164,18 +162,17 @@ function UserHistory() {
   };
 
 
-  useEffect(() => {
-    async function fetchPurchasesById() {
-      const url = `/api/purchases/getPurchaseByUser/${currentUser._id}`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-        const json = await response.json();
-        console.log(json);
-        setData(json);
-        setFilteredData(json);
+    useEffect(() => {
+        async function fetchPurchasesById() {
+          const url = `/api/purchases/getPurchaseByUser/${currentUser._id}`;
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+            const json = await response.json();
+            setData(json);
+            setFilteredData(json);
 
       } catch (error) {
         console.error(error.message);
@@ -237,7 +234,6 @@ function UserHistory() {
               <MenuItem value={'Aprobado'}>Aprobado</MenuItem>
               <MenuItem value={'Rechazado'}>Rechazado</MenuItem>
             </CustomSelect>
-            <Button variant="contained" sx={{ borderRadius: 3, width: 100, backgroundColor: '#7749F8', fontWeight: 600, textTransform: 'none' }}>Aplicar</Button>
           </Grid>
           <Grid xs={1}>
             <Box sx={{ width: '2px', backgroundColor: 'grey.400', height: '100%' }} />

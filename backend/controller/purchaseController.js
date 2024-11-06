@@ -6,7 +6,8 @@ import jwt from 'jsonwebtoken';
 
 export const registrar = async (req, res) => {
     const reqBody = req.body;
-
+    const buffer = Buffer.from(reqBody.imgFactura.data, 'base64');
+    reqBody.imgFactura.data = buffer;
     try {
         const purchase = new Purchase(reqBody);
         await purchase.save();
