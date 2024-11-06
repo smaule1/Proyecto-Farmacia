@@ -42,4 +42,14 @@ export const getMedicines = async (req, res) => {
         console.error(error);
         res.status(500).send('Error al obtener las medicinas');
     }
+};
+
+export const getAllowedMedicines = async (req, res) => {
+    try {
+        const medicines = await Medicine.find({ estado:"Permitido" }, 'nombre');
+        res.send(medicines);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las medicinas');
+    }
 }

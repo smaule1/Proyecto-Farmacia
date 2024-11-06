@@ -75,6 +75,8 @@ function Medicine() {
   const handleUpdate = async (event) => {
     event.preventDefault();
 
+    setAlertMessage('');
+
     if(selectedMedicine == null) {
       setAlertMessage("Error: Debe seleccionar una medicina.");
       return;
@@ -87,16 +89,16 @@ function Medicine() {
       setAlertMessage("Error: Debe seleccionar una medicina.");
       return;
     }
-    if(totalPuntos <= 0) {
-      setAlertMessage("Error: Debe especificar la cantidad de puntos necesarios.");
-      return;
+    if (selectedEstado.nombre != "Prohibido") {
+      if(totalPuntos <= 0) {
+        setAlertMessage("Error: Debe especificar la cantidad de puntos necesarios.");
+        return;
+      }
+      if(puntos <= 0) {
+        setAlertMessage("Error: Debe especificar la cantidad de puntos unitarios.");
+        return;
+      }
     }
-    if(selectedMedicine <= 0) {
-      setAlertMessage("Error: Debe especificar la cantidad de puntos unitarios.");
-      return;
-    }
-
-    setAlertMessage('');
 
     await setBeneficio()
   };
