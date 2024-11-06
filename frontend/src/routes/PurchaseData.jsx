@@ -19,6 +19,8 @@ function PurchaseData() {
     const { id } = useParams();
 
     const [data, setData] = useState([]);
+    const [points, setPoints] = useState('');
+    const [user, setUser] = useState('');
     
     const {
       currentUser
@@ -54,7 +56,6 @@ function PurchaseData() {
 
     function formatDate(fechaRecibida){
       const fecha = new Date(fechaRecibida);
-      console.log(fecha.getFullYear());
       const diaConFormato = (fecha.getDate() < 10) ? '0' + fecha.getDate() : fecha.getDate();  
       const mes = fecha.getMonth() + 1;
       const año = fecha.getFullYear();
@@ -65,12 +66,14 @@ function PurchaseData() {
       async function fetchPurchasesById() {
         const url = `/api/purchases/getPurchaseById/${id}`;
         try {
+          //Fetches Purchase
           const response = await fetch(url);
           if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
           }
           const jsonPurchase = await response.json();
 
+          //Fetches Pharmacy information
           const urlFarmacia = `/api/pharmacies/getPharmacyById/${jsonPurchase.farmacia}`;
           const responseFarmacia = await fetch(urlFarmacia);
           if (!responseFarmacia.ok) {
@@ -78,17 +81,36 @@ function PurchaseData() {
           }
           const jsonFarmacia = await responseFarmacia.json();
           jsonPurchase.farmacia = jsonFarmacia.nombre;
-          const urlMedicinelFarmacia = `/api/medicines/getMedicineById/${jsonPurchase.medicamento}`;
-          const responseMedicina = await fetch(urlMedicinelFarmacia);
+
+          //Fetches Medicine information
+          const urlMedicina = `/api/medicines/getMedicineById/${jsonPurchase.medicamento}`;
+          const responseMedicina = await fetch(urlMedicina);
           if (!responseMedicina.ok) {
             throw new Error(`Response status: ${responseMedicina.status}`);
           }
           const jsonMedicina = await responseMedicina.json();
+          
+          setPoints(jsonMedicina.puntosUnitarios);
           jsonPurchase.medicamento = jsonMedicina.nombre;
 
+          //Fetches client information
+          const urlCliente = `/api/users/getUserNameById/${jsonPurchase.cliente}`;
+          const responseCliente = await fetch(urlCliente);
+          if (!responseCliente.ok) {
+            throw new Error(`Response status: ${responseCliente.status}`);
+          }
+          const jsonCliente = await responseCliente.json();
+          console.log(jsonCliente);
+
+          setUser(jsonPurchase.cliente);
+          jsonPurchase.cliente = jsonCliente.email;
+
+          //Formats Date
           jsonPurchase.fecha = formatDate(jsonPurchase.fecha); 
 
+          console.log(jsonPurchase);
           setData(jsonPurchase);
+
         } catch (error) {
           console.error(error.message);
         }

@@ -78,7 +78,17 @@ export const logout = async (req, res) => {
     res.sendStatus(200);    
 };
 
+export const getUserNameById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id, 'email');
+        res.send(user);
 
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las farmacias');
+    }
+}
 
 function createToken(user) {
     const token = jwt.sign(
