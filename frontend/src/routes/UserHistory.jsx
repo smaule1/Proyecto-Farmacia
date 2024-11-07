@@ -19,9 +19,6 @@ const StyledTextField = styled(TextField)(({ }) => ({
       borderColor: '#7749F8',
     },
   },
-  '& input::placeholder': {
-    paddingLeft: 5,
-  },
   '& input': {
     textAlign: 'center',
   },
@@ -106,7 +103,6 @@ function UserHistory() {
     };
 
     const handleState = (newState) => {
-      console.log(newState);
         switch (newState){
             case 'Aprobado':
                 setstatusOrder({
@@ -149,55 +145,58 @@ function UserHistory() {
   const handleFiltros = () => {
 
     let filterData = filteredData;
+    
     if (selectedDate !== null) {
-      console.log(filterData);
-      filterData = [filteredData.find(purchase => Date.parse(purchase.fecha) === Date.parse(selectedDate))];
+      filterData = filteredData.filter(purchase => Date.parse(purchase.fecha) === Date.parse(selectedDate));
     }
 
     if (sequence !== 0 && filterData[0]) {
-      filterData = [filterData.find(purchase => purchase.numeroFactura === sequence)];
+      filterData = filterData.filter(purchase => purchase.numeroFactura === sequence);
     }
 
     (filterData[0]) ? setData(filterData) : setData([]);
   };
 
+  const deleteDate = () => {
+    setSelectedDate(null);
+  };
 
-    useEffect(() => {
-        async function fetchPurchasesById() {
-          const url = `/api/purchases/getPurchaseByUser/${currentUser._id}`;
-          try {
-            const response = await fetch(url);
-            if (!response.ok) {
-              throw new Error(`Response status: ${response.status}`);
-            }
-            const json = await response.json();
-            setData(json);
-            setFilteredData(json);
+  useEffect(() => {
+      async function fetchPurchasesById() {
+        const url = `/api/purchases/getPurchaseByUser/${currentUser._id}`;
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+          const json = await response.json();
+          setData(json);
+          setFilteredData(json);
 
-      } catch (error) {
-        console.error(error.message);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  async function fetchPendingPurchases() {
+    const url = `/api/purchases/getAll`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
       }
-    };
-
-    async function fetchPendingPurchases() {
-      const url = `/api/purchases/getAll`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-        const json = await response.json();
-        setData(json);
-        setFilteredData(json);
+      const json = await response.json();
+      setData(json);
+      setFilteredData(json);
 
 
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
-    (currentUser.rol === 'Usuario') ? fetchPurchasesById() : fetchPendingPurchases();
-
+  (currentUser.rol === 'Usuario') ? fetchPurchasesById() : fetchPendingPurchases();
+    handleState('Pendiente');
   }, []);
 
 
@@ -225,7 +224,10 @@ function UserHistory() {
             {currentUser.rol === 'Usuario' && <StyledTextField onChange={handleSequence} placeholder="Número de Factura" />}
 
             <Grid size={12}>
-              <DatePickerRequest handleDate={handleDate} StyledTextField={StyledTextField} />
+              <DatePickerRequest date={selectedDate} handleDate={handleDate} StyledTextField={StyledTextField} />
+              
+              {selectedDate && <Button variant="contained" onClick={deleteDate}
+              sx={{borderRadius: 3, width: 130, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none', mb: 2}}>Borrar Fecha</Button>}
             </Grid>
 
             <CustomSelect value={state} id="demo-simple-select" placeholder="Estado" onChange={(newValue) => { handleState(newValue.target.value) }} displayEmpty>

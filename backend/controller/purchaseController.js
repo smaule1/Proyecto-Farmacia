@@ -5,10 +5,11 @@ import jwt from 'jsonwebtoken';
 //import mongoose from 'mongoose';
 
 export const registrar = async (req, res) => {
+    try {
     const reqBody = req.body;
     const buffer = Buffer.from(reqBody.imgFactura.data, 'base64');
     reqBody.imgFactura.data = buffer;
-    try {
+    
         const purchase = new Purchase(reqBody);
         await purchase.save();
         res.status(200).json({ success: true });

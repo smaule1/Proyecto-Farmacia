@@ -55,9 +55,10 @@ function Purchase() {
   const [selectedPharmacy, setSelectedPharmacy] = useState('');
   const [selectedMedicine, setSelectedMedicine] = useState('');
   const [selectedQuantity, setselectedQuantity] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSequence, setSelectedSequence] = useState(0);
   const [file, setFile] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
 
   const fileInputRef = useRef(null);
 
@@ -66,6 +67,7 @@ function Purchase() {
   } = useContext(CurrentUserContext);
 
   const handlePharmacy = (event, value) => {
+    console.log(value);
     setSelectedPharmacy(value);
   };
 
@@ -101,7 +103,6 @@ function Purchase() {
         });
       };
       
-
       reader.readAsDataURL(file);
 
     }
@@ -112,6 +113,9 @@ function Purchase() {
   };
 
   async function registerPurchase() {
+    const medicinaFormato = (selectedMedicine === null) ? null : selectedMedicine._id;
+    const farmaciaFormato = (selectedPharmacy === null) ? null : selectedPharmacy._id;
+    
     const url = `/api/purchases/registrar`;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -119,15 +123,15 @@ function Purchase() {
       const response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({ 
-          medicamento: selectedMedicine._id, 
+          medicamento: medicinaFormato, 
           cantidad: selectedQuantity, 
           fecha: selectedDate, 
           numeroFactura: selectedSequence,
           imgFactura: {
             data: file.data,
-            contentType: file.contentType
+            contentType: file.contentType,
           },
-          farmacia: selectedPharmacy._id,
+          farmacia: farmaciaFormato,
           estado: 'Pendiente',
           cliente: currentUser._id
         }),
@@ -139,7 +143,7 @@ function Purchase() {
         alert('Compra registrada correctamente');    
         navigate("/temp");              
       } else {
-        alert('Error al guardar la compra');      
+        setAlertMessage("Ningún campo puede quedar vacío");    
       }     
 
     } catch (error) {
@@ -180,15 +184,6 @@ function Purchase() {
     fetchPharmacies();
     fetchMedicines();
   }, []);
-
-  useEffect(() => {
-    console.log(selectedMedicine);
-    console.log(selectedPharmacy);
-    console.log(file);
-    console.log(selectedDate);
-    console.log(selectedQuantity);
-    console.log(selectedSequence);
-  }, [selectedSequence]);
 
   return (
     <div>      
@@ -236,6 +231,9 @@ function Purchase() {
         </Grid>
 
         <Grid container sx={{mt: 10, mx: 'auto', width: 450, textAlign: 'center'}}>
+          <Grid size={12}>
+            {alertMessage && <div className="alert alert-danger row h-20" role="alert">{alertMessage}</div>}
+          </Grid>
           <Grid size={6}>
             <Button variant="contained" onClick={registerPurchase}
             sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Registrar Compra</Button>
