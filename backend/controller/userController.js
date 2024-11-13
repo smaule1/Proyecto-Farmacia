@@ -13,6 +13,7 @@ export const registrar = async (req, res) => {
     const user = new User(reqBody);
 
     try {
+        hashPassword(user);
         await user.save();
         const token = createToken(user);
         res.cookie('userInfo', token, { httpOnly: true, maxAge: MAX_AGE, sameSite: 'strict' }) //maxAge 1 hora
@@ -148,4 +149,9 @@ async function getUser(id) {
     } catch (error) {
         throw error;
     }
+}
+
+async function hashPassword(user){
+    salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(this.password, salt);
 }
