@@ -9,7 +9,8 @@ import CurrentUserContext from './Context';
 import Purchase from './routes/Purchase';
 import UserHistory from  './routes/UserHistory';
 import PurchaseData from './routes/PurchaseData';
-import Medicine from './routes/Medicine'
+import UserState from './routes/UserState';
+import Medicine from './routes/Medicine';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -30,7 +31,9 @@ function App() {
             <Route path="/userHistory" element={<UserHistory />} />
             <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />
             <Route path="/beneficio" element={<Medicine />} />
+            
           </Route>
+          <Route path="/userState" element={<UserState />} />
           <Route path="/register" element={<Register />} />          
           <Route path="/login" element={<Login />} />
         </Routes>
