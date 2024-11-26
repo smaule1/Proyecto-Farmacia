@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
 
 //Enum
 const Rol = {
@@ -36,14 +35,6 @@ const userSchema = new mongoose.Schema({
     default: 0 
   }
 });
-
-userSchema.pre('save', async function (next){
-  const salt = await bcrypt.genSalt();
-  this.password = await bcrypt.hash(this.password, salt);
-  next(); 
-});
-
-
 
 //Model
 const User = mongoose.model('users', userSchema );
