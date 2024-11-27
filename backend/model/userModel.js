@@ -4,7 +4,8 @@ import mongoose from "mongoose";
 const Rol = {
   Administrador: 'Administrador',
   Encargado: 'Encargado',
-  Usuario: 'Usuario'  
+  Usuario: 'Usuario',
+  Farmacia: 'Farmacia'
 };
 Object.freeze(Rol);
 

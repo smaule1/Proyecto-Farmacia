@@ -149,7 +149,7 @@ function handleMongooseErros(errorObj) {
 
 async function getUser(id) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        throw new Error('Invalid id');
+        throw 'Invalid id';
     }    
     try {
         const user = await User.findById(id);
