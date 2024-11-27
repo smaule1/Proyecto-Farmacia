@@ -1,4 +1,5 @@
 import Pharmacy from "../model/pharmacyModel.js";
+import { getPharmacies as getPharmaciesLogic } from '../logic/pharmacyLogic.js';
 //import mongoose from 'mongoose';
 
 //Esto me parece que no hace falta pero está por ahora
@@ -16,7 +17,7 @@ export const registrar = async (req, res) => {
 
 export const getPharmacies = async (req, res) => {
     try {
-        const pharmacies = await Pharmacy.find({}, 'nombre');
+        const pharmacies = getPharmaciesLogic();
         res.send(pharmacies);
     } catch (error) {
         console.error(error);

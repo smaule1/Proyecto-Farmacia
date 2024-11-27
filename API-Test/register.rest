@@ -1,8 +1,8 @@
-POST http://localhost:5000/api/users/registrar HTTP/1.1
+POST http://localhost:5000/api/perfilFarmacia/registrar HTTP/1.1
 content-type: application/json
 
 {
-    "nombreUsuario":"s",
+    "nombreUsuario":"Farmacia La Bomba",
     "email": "c12@email.com",
     "password": "A",
     "rol": "Usuario"
