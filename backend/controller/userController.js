@@ -2,6 +2,7 @@ import User from '../model/userModel.js';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
+import { registrarUsuario } from '../logic/userLogic.js';
 
 
 const MAX_AGE = 1000 * 60 * 60;
@@ -9,18 +10,13 @@ const MAX_AGE = 1000 * 60 * 60;
 export const registrar = async (req, res) => {
     const reqBody = req.body;
 
-
-    const user = new User(reqBody);
-
     try {
-        await hashPassword(user);
-        await user.save();
+        const user = await registrarUsuario(reqBody);        
         const token = createToken(user);
         res.cookie('userInfo', token, { httpOnly: true, maxAge: MAX_AGE, sameSite: 'strict' }) //maxAge 1 hora
         res.status(200).json({ data: { user } });            
-    } catch (error) {
-        const errorList = handleMongooseErros(error);
-        res.status(400).json({ errors: errorList });
+    } catch (error) {        
+        res.status(400).json(error);
     }
 };
 
