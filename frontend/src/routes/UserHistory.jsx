@@ -97,7 +97,6 @@ function UserHistory() {
     };
 
     const changePage = () => {
-    
         const newActiveItems = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
         setActiveItems(newActiveItems);
     };

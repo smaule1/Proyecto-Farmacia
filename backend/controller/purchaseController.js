@@ -52,6 +52,19 @@ export const getPurchasesById = async (req, res) => {
     }
 }
 
+export const medicineByUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const purchases = await Purchase.find({ cliente: id, estado: 'Aprobada' }, 'medicamento cantidad');
+
+        res.send(purchases);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las farmacias');
+    }
+}
+
 export const getLastPurchasesByUser = async (req, res) => {
     try {
         const { id } = req.params;

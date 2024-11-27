@@ -24,6 +24,18 @@ export const registrar = async (req, res) => {
     }
 };
 
+export const getUserByEmail = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const points = await User.find({ email: email }, 'puntos');
+
+        res.send(points);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener puntos');
+    }
+}
 
 export const login = async (req, res) => {
     
