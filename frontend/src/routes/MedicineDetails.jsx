@@ -69,7 +69,6 @@ function MedicineDetail() {
   const changePage = () => {
       const newActiveItems = purchases.slice((page - 1) * itemsPerPage, page * itemsPerPage);
       setActiveItems(newActiveItems);
-      console.log(newActiveItems);
   };
 
   const handlePage = (event, newPage) => {
@@ -82,19 +81,6 @@ function MedicineDetail() {
     const mes = fecha.getMonth() + 1;
     const año = fecha.getFullYear();
     return (año + '-' + mes + '-' + diaConFormato) ;
-  }
-
-  function renderInput(){
-      return(
-          <div>
-              <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
-              <StyledTextField onClick={handleIconClick} value={fileName} slotProps={{ input: { readOnly: true, startAdornment: (
-                <InputAdornment position="start">
-                  <UploadFileIcon fontSize="large" sx={{color: 'black', mb: 0.5, cursor: 'pointer'}}/>
-                </InputAdornment>)}}} 
-                id="outlined-basic" placeholder="Imagen de Factura"/>
-          </div>
-      );
   }
   
   function sortPurchases(jsonPurchases) {
@@ -109,21 +95,47 @@ function MedicineDetail() {
     for (let i = 0; i < result.length; i++) {
       result[i].fecha = formatDate(result[i].fecha);
     }
-    console.log(result);
 
     setPurchases(result);
   };
 
-  async function corroborar(estado) {
-    const url = `/api/purchases/corroborar/${id}-${estado}`;
+  async function canjear(estado) {
+    const medicinaFormato = (selectedMedicine === null) ? null : selectedMedicine._id;
+    const farmaciaFormato = (selectedPharmacy === null) ? null : selectedPharmacy._id;
+    
+    const url = `/api/canjes/registrar`;
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
     try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-      navigate(`/userHistory`);
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ 
+          medicamento: medicinaFormato, 
+          cantidad: selectedQuantity, 
+          fecha: selectedDate, 
+          numeroFactura: selectedSequence,
+          imgFactura: {
+            data: file.data,
+            contentType: file.contentType,
+          },
+          farmacia: farmaciaFormato,
+          estado: 'Pendiente',
+          cliente: currentUser._id
+        }),
+        headers: myHeaders,
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        alert('Compra registrada correctamente');    
+        navigate("/temp");              
+      } else {
+        setAlertMessage("Ningún campo puede quedar vacío");    
+      }     
+
     } catch (error) {
       console.error(error.message);
+      alert('Ocurrió un error inesperado');
     }
   };
 
@@ -139,6 +151,7 @@ function MedicineDetail() {
         }
         const jsonMedicine = await medicineResponse.json();
         setData(jsonMedicine);
+        console.log(jsonMedicine);
 
         //Fetches Purchases
         const purchasesResponse = await fetch(urlPurchases);
@@ -157,9 +170,7 @@ function MedicineDetail() {
           const jsonFarmacia = await responseFarmacia.json();
           element.farmacia = jsonFarmacia.nombre;
         }
-
-        sortPurchases(jsonPurchases);
-
+        console.log(jsonPurchases);
       } catch (error) {
         console.error(error.message);
       }
