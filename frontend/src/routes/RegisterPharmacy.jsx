@@ -58,6 +58,8 @@ function Register() {
 
                 setData(jsonlist);
 
+                console.log(jsonlist);
+
             } catch (error) {
                 console.error(error.message);
             }
@@ -118,7 +120,7 @@ function Register() {
                                     <select className={nombreClass}
                                         value={nombreUsuario} onChange={(e) => setNombreUsuario(e.target.value)} required>
                                         {data.map(name => (
-                                            <option key={name} value={name}>{name}</option>
+                                            <option key={name.nombre} value={name.nombre}>{name.nombre}</option>
                                         ))}
                                     </select>
                                 </div>

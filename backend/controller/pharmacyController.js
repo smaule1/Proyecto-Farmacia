@@ -17,8 +17,8 @@ export const registrar = async (req, res) => {
 
 export const getPharmacies = async (req, res) => {
     try {
-        const pharmacies = getPharmaciesLogic();
-        res.send(pharmacies);
+        const pharmacies = await getPharmaciesLogic();
+        res.status(200).json(pharmacies);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al obtener las farmacias');
