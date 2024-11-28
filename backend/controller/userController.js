@@ -44,7 +44,7 @@ export const login = async (req, res) => {
     const reqToken = req.cookies.userInfo;
     if (reqToken) { //ReqToken se encuentra en los cookies            
         try {
-            const decodedToken = decodeToken(reqToken);  //ReqToken es válido                                     
+            const decodedToken = decodeToken(reqToken);  //ReqToken es válido    
             const user = await getUser(decodedToken._id);
             const token = createToken(user);
             //Enviar token fresco al usuario

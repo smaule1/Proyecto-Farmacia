@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export const decodeToken = (token) => {
     try{ 
-        return jwt.verify(reqToken, process.env.JWT_PRIVATE_KEY);
+        return jwt.verify(token, process.env.JWT_PRIVATE_KEY);
     }catch(err){
         throw err;
     }    
