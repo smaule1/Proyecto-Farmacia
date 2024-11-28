@@ -2,7 +2,10 @@ import User from '../model/userModel.js';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
-import { registrarUsuario } from '../logic/userLogic.js';
+import { 
+    registrarUsuario,
+    getUsernameById
+} from '../logic/userLogic.js';
 
 
 const MAX_AGE = 1000 * 60 * 60;
@@ -90,12 +93,11 @@ export const logout = async (req, res) => {
 export const getUserNameById = async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await User.findById(id, 'email');
+        const user = await getUsernameById(id);
         res.send(user);
-
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al obtener las farmacias');
+        res.status(500).send('Error al obtener el email');
     }
 }
 

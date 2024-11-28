@@ -13,6 +13,16 @@ export const createUser = async (userData) => {
     }
 }
 
+export const getEmailById = async (id) => {    
+    try {        
+        const user = await User.findById(id, 'email');
+        return user.toObject();                      
+    } catch (error) {
+        const errorList = handleMongooseErros(error);
+        throw errorList;
+    }
+}
+
 function handleMongooseErros(errorObj) {
     const errors = [];
 
