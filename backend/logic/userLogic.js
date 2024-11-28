@@ -1,56 +1,45 @@
-import User from '../model/userModel.js';
-import bcrypt from "bcrypt";
+import {
+    createUser,
+    getEmailById,
+    getUserById,
+    getPointsByEmail
+} from "../data/userDAO.js";
+import { hashPassword } from "../utils/encrypter.js";
+
 
 export const registrarUsuario = async (userData) => {
-    const user = new User(userData);
-
     try {
-        await hashPassword(user);
-        await user.save();  
-        return user.toObject();                      
+        await hashPassword(userData);
+        const user = createUser(userData);
+        return user;
     } catch (error) {
-        const errorList = handleMongooseErros(error);
-        throw errorList;
+        throw error;
     }
 }
 
-function handleMongooseErros(errorObj) {
-    const errors = [];
 
-    console.log(errorObj);
-
-    if (errorObj.code == 11000) {
-        const param = Object.keys(errorObj.keyPattern)[0];
-        const message = `Ese ${param} ya esta registrado.`;
-        const error = { param: param, message: message };
-        errors.push(error);
-
-    } else {
-        const errorList = Object.values(errorObj.errors);
-
-        for (const err of errorList) {
-            console.log(err);
-
-            const param = err.path;
-            let message = '';
-            switch (err.kind) {
-                case 'required':
-                    message = `El paramámetro ${param} es requerido.`
-                    break;
-                case 'enum':
-                    message = `El paramámetro ${param} debe tener un valor permitido.`
-                    break;
-                default:
-                    break;
-            }
-            const error = { param: param, message: message };
-            errors.push(error);
-        }
+export const getUsernameById = async (id) => {
+    try {        
+        return await getEmailById(id);
+    } catch (error) {
+        throw error;
     }
-    return errors;
 }
 
-async function hashPassword(user){
-    let salt = await bcrypt.genSalt();
-    user.password = await bcrypt.hash(user.password, salt);    
+export const getUserByEmail = async (id) => {
+    try {        
+        return await getPointsByEmail(id);
+    } catch (error) {
+        throw error;
+    }
 }
+
+export const getUser = async (id) => {
+    try {        
+        return await getUserById(id);
+    } catch (error) {
+        throw error;
+    }
+}
+
+

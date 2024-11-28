@@ -53,7 +53,8 @@ function NavBar() {
               </li>
               {currentUser && currentUser.rol === 'Usuario' && renderCorrectNavBar()}
               <li className="nav-item">
-                {currentUser && <Link className="nav-link text-dark" to="/userHistory">{currentUser.rol !== 'Usuario' ? 'Solicitudes Pendientes' : 'Historial'}</Link>}
+                {currentUser && (currentUser.rol === 'Administrador' || currentUser.rol === 'Encargado' || currentUser.rol === 'Usuario') &&
+                <Link className="nav-link text-dark" to="/userHistory">{currentUser.rol !== 'Usuario' ? 'Solicitudes Pendientes' : 'Historial'}</Link>}
               </li>
               <li className='nav-item'>
                 {currentUser && currentUser.rol === 'Administrador' && <Link className="nav-link text-dark" to="/beneficio">Gestionar Medicamentos</Link>}

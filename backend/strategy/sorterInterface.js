@@ -2,7 +2,7 @@
 // Se ve medio estúpida gracias a JavaScript 👍
 export const sorter = {
     // Una maestro de los patrones yo
-    sort: function (canjes) {}
+    sort: function (list) {}
 }
 
 // Función para revisar que si una clase implementa la interfaz
