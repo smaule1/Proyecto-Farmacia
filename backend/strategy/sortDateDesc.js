@@ -3,7 +3,8 @@ import {implementsInterface as check} from './sorterInterface'
 
 export class sortDateDesc {
     sort(canjes) {
-        
+        // Muy útil
+        return canjes;
     }
 }
 
