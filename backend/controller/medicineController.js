@@ -47,7 +47,7 @@ export const getMedicineById = async (req, res) => {
 
 export const getMedicines = async (req, res) => {
     try {
-        const medicines = await Medicine.find({}, 'nombre');
+        const medicines = await Medicine.find({}, 'nombre estado puntosRequeridos puntosUnitarios');
         res.send(medicines);
     } catch (error) {
         console.error(error);
