@@ -99,11 +99,10 @@ function MedicineDetail() {
   };
 
   async function canjear() {
-    const nombreFarmacia = "Farmacia La Bomba";
     const date = new Date();
     let pharmacyId;
 
-    const urlPharmacy = `/api/pharmacies/getPharmacyByName/${nombreFarmacia}`;
+    const urlPharmacy = `/api/pharmacies/getPharmacyByName/${currentUser.nombreUsuario}`;
     try {
       //Fetches pharmacy id
       const pharmacyResponse = await fetch(urlPharmacy);

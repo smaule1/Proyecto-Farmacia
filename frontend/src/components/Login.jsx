@@ -43,6 +43,7 @@ function Login() {
 
       if (response.ok) {
         const resBody = await response.json();
+        console.log(resBody);
         setCurrentUser(resBody.data.user);
         console.log(currentUser);
       } else {
@@ -58,7 +59,7 @@ function Login() {
                 break;
             }
           }
-          setAlertMessage(error.message + '\n');          
+          setAlertMessage(error.message + '\n');    
         }
       }
     } catch (error) {

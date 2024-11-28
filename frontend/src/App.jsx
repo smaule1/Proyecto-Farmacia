@@ -35,11 +35,10 @@ function App() {
             <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />
             <Route path="/beneficio" element={<Medicine />} />
             <Route path="/registrarFarmacia" element={<RegisterPharmacy />} />
-            
+            <Route path="/userState/medicineDetail/:id/:user" element={<MedicineDetail />} />
+            <Route path="/userState" element={<UserState />} />
           </Route>
           <Route path="/canjesHistory" element={<CanjesHistory />} />
-          <Route path="/userState/medicineDetail/:id/:user" element={<MedicineDetail />} />
-          <Route path="/userState" element={<UserState />} />
           <Route path="/register" element={<Register />} />          
           <Route path="/login" element={<Login />} />
         </Routes>
