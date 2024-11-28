@@ -6,7 +6,6 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 function AmountCheckBox({ handleQuantity, CustomCheckBox, placeholder, value, setValue }) {  
 
   const handleIncrease = () => {
-    if(value == "lol") value = 0
     const numberValue = Number(value);
     setValue(value === '' ? 1 : numberValue + 1);
   };

@@ -178,7 +178,7 @@ return (
               </li>)}
             renderInput={(params) => <StyledTextField {...params} placeholder='Medicamento'/>} onChange={(event, newValue) => {setSelectedMedicina(newValue); changeValues(newValue)}} />
           </Grid>
-          <Grid size={6} id="grid1">
+          <Grid size={6}>
             <Autocomplete noOptionsText="No se encontraron resultados" options={estados}
               getOptionLabel={(option) => option.nombre || selectedEstado} renderOption={(props, option) => (
                 <li {...props} key={option._id}> {/* Esto es para manejar hijos repetidos (Aunque no debería suceder) */}
