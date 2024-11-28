@@ -3,8 +3,7 @@ import { InputAdornment, IconButton } from '@mui/material';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-function AmountCheckBox({ handleQuantity, CustomCheckBox, placeholder }) {  
-  const [value, setValue] = React.useState('');
+function AmountCheckBox({ handleQuantity, CustomCheckBox, placeholder, value, setValue }) {  
 
   const handleIncrease = () => {
     const numberValue = Number(value);

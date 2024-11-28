@@ -58,6 +58,9 @@ function NavBar() {
               <li className='nav-item'>
                 {currentUser && currentUser.rol === 'Administrador' && <Link className="nav-link text-dark" to="/beneficio">Gestionar Medicamentos</Link>}
               </li>
+              <li className='nav-item'>
+                {currentUser && currentUser.rol === 'Administrador' && <Link className="nav-link text-dark" to="/registrarFarmacia">Registrar Farmacia</Link>}
+              </li>
               <li className="nav-item">
                 {currentUser && <button className="nav-link text-dark" onClick={logout}>Cerrar Sesión</button>}
               </li>
