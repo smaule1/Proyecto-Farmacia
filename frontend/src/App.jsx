@@ -37,8 +37,8 @@ function App() {
             <Route path="/registrarFarmacia" element={<RegisterPharmacy />} />
             <Route path="/userState/medicineDetail/:id/:user" element={<MedicineDetail />} />
             <Route path="/userState" element={<UserState />} />
-          </Route>
-          <Route path="/canjesHistory" element={<CanjesHistory />} />
+            <Route path="/canjesHistory" element={<CanjesHistory />} />
+          </Route>   
           <Route path="/register" element={<Register />} />          
           <Route path="/login" element={<Login />} />
         </Routes>

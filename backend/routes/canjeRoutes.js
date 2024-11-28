@@ -6,5 +6,5 @@ export default router;
 
 
 router.post('/registrar', registrarCanje);
-router.post('/getCanjesByUser/:id', getCanjesByUser);
+router.get('/getCanjesByUser/:id', getCanjesByUser);
 

@@ -55,6 +55,7 @@ function CanjesHistory() {
 
   const [data, setData] = useState([]);
   const [user, setUser] = useState();
+  const [points, setPoints] = useState(0);
   const [activeItems, setActiveItems] = useState([]);
   const [page, setDataPage] = useState(1);
   const [email, setEmail] = useState('');
@@ -75,15 +76,18 @@ function CanjesHistory() {
     setDataPage(newPage);
   };
 
-  function calculateMedicineData(purchase, medicine, points){
-    const globalPoints = purchase.cantidad * medicine.puntosUnitarios;
+  function formatDate(fechaRecibida){
+    const fecha = new Date(fechaRecibida);
+    const diaConFormato = (fecha.getDate() < 10) ? '0' + fecha.getDate() : fecha.getDate();  
+    const mes = fecha.getMonth() + 1;
+    const año = fecha.getFullYear();
+    return (año + '-' + mes + '-' + diaConFormato) ;
+  }
+
+  function calculateMedicineData(fecha, numero){
     const builtData = {
-      name: medicine.nombre,
-      description: medicine.descripcion,
-      globalPoints: globalPoints,
-      usedPoints: 0,
-      availablePoints: points,
-      medicineId: medicine._id,
+      fecha: fecha,
+      numero: numero,
     };
     setData(prevData => [...prevData, builtData]);
   }
@@ -99,11 +103,8 @@ function CanjesHistory() {
                     <ListItem key = {index}>
                       <ListItemButton onClick={() => { navigate(`/userState/medicineDetail/${item.medicineId}/${user}`) }} sx={{ borderRadius: '10px', p: 2 }}>
                         <Grid container direction="column" spacing={2} sx={{ mx: 'auto' }}>
-                          <Typography sx={{ fontSize: 20, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{item.name}</Typography>
-                          <Typography sx={{ fontSize: 14 }}>Descripción: {item.description}</Typography>
-                          <Typography sx={{ fontSize: 16 }}> Cantidad de puntos acumulados hasta el momento: {item.globalPoints}</Typography>
-                          <Typography sx={{ fontSize: 16 }}>Cantidad de puntos usados en canjes: {item.usedPoints}</Typography>
-                          <Typography sx={{ fontSize: 16 }}>Cantidad de puntos disponibles: {item.availablePoints}</Typography>
+                          <Typography sx={{ fontSize: 16 }}>Fecha del canje: {item.fecha}</Typography>
+                          <Typography sx={{ fontSize: 16 }}>Número del canje: {item.numero}</Typography>
                         </Grid>
                       </ListItemButton>
                     </ListItem>
@@ -118,10 +119,9 @@ function CanjesHistory() {
   
   async function checkUser(){
     setData([]);
+    let points;
     let jsonUser;
     let jsonCanjes;
-    let jsonMedicines;
-    let points = 0;
 
     const urlUser = `/api/users/getUserByEmail/${email}`;
       try {
@@ -132,6 +132,7 @@ function CanjesHistory() {
         }
         jsonUser = await response.json();
         points = jsonUser[0].puntos;
+        setPoints(points);
         setUser(jsonUser[0]._id);
 
       } catch (error) {
@@ -146,25 +147,14 @@ function CanjesHistory() {
           throw new Error(`Response status: ${response.status}`);
         }
         jsonCanjes = await response.json();
-
+        console.log(jsonCanjes)
       } catch (error) {
         console.error(error.message);
       }
 
     for(const element of jsonCanjes){
-      const urlMedicine = `/api/medicines/getMedicineById/${element.medicamento}`;
-      try {
-        //Fetches Medicine
-        const response = await fetch(urlMedicine);
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-        jsonMedicines = await response.json();
-        //calculateMedicineData(element, jsonMedicines, points);
-        console.log(jsonMedicines);
-      } catch (error) {
-        console.error(error.message);
-      }
+      const date = formatDate(element.fecha);
+      calculateMedicineData(date, element.numero);
     }
   } 
 
@@ -175,7 +165,7 @@ function CanjesHistory() {
   return (
     <div>      
         <Container maxWidth="lg" sx={{mt: 5, paddingBottom: 5}}>
-        <h2>Detalles de usuario</h2>
+        <h2>Canjes por Usuario</h2>
         <hr></hr>
 
         <Grid container spacing={5} sx={{mt: 10, textAlign: 'center'}}>
