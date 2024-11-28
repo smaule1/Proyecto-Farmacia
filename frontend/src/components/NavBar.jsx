@@ -65,7 +65,9 @@ function NavBar() {
               <li className='nav-item'>
                 {currentUser && currentUser.rol === 'Farmacia' && <Link className="nav-link text-dark" to="/userState">Visualizar Usuario</Link>}
               </li>
-
+              <li className='nav-item'>
+                {currentUser && currentUser.rol === 'Farmacia' && <Link className="nav-link text-dark" to="/canjesHistory">Historial de Canjes</Link>}
+              </li>
               <li className="nav-item">
                 {currentUser && <button className="nav-link text-dark" onClick={logout}>Cerrar Sesión</button>}
               </li>

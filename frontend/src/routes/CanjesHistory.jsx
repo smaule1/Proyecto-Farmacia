@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { TextField, Container, styled, Button, Typography, Box, Link }from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { TextField, Container, styled, Button, Typography, List, ListItem, ListItemButton, ListItemText, Pagination }from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import CurrentUserContext from '../Context';
 
@@ -41,170 +41,156 @@ const StyledTypography = styled(Typography)(({ }) => ({
     padding: '8px 20px 20px',
 }));
 
+const CustomPagination = styled(Pagination)(({ }) => ({
+  '& .MuiPaginationItem-root': {
+    borderColor: '#7749F8',
+  },
+  '& .MuiPaginationItem-previousNext': {
+    backgroundColor: '#7749F8',
+  },
+}));
+
 function CanjesHistory() { 
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const navigate = useNavigate();
 
-    const [data, setData] = useState([]);
-    const [dataUri, setDataUri] = useState(null);
-    
-    const {
-      currentUser
-    } = useContext(CurrentUserContext);
+  const [data, setData] = useState([]);
+  const [user, setUser] = useState();
+  const [activeItems, setActiveItems] = useState([]);
+  const [page, setDataPage] = useState(1);
+  const [email, setEmail] = useState('');
+  
+  const itemsPerPage = 3;
+  const amountOfPages = Math.ceil(data.length / itemsPerPage);
 
-    function backButton(){
+  const {
+    currentUser
+  } = useContext(CurrentUserContext);
+
+  const changePage = () => {
+    const newActiveItems = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+    setActiveItems(newActiveItems);
+  };
+
+  const handlePage = (event, newPage) => {
+    setDataPage(newPage);
+  };
+
+  function calculateMedicineData(purchase, medicine, points){
+    const globalPoints = purchase.cantidad * medicine.puntosUnitarios;
+    const builtData = {
+      name: medicine.nombre,
+      description: medicine.descripcion,
+      globalPoints: globalPoints,
+      usedPoints: 0,
+      availablePoints: points,
+      medicineId: medicine._id,
+    };
+    setData(prevData => [...prevData, builtData]);
+  }
+
+  function renderInput(){
       return(
-          <Button onClick={() => {navigate(-1);}} variant="contained" sx={{m: 'auto', borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Volver</Button>
+          <div>
+              <hr></hr>
+              <h4 style={{textAlign: 'center'}}>Medicamentos</h4>
+              <Grid size={8}>
+                <List variant="outlined" sx={{ display: 'flex', width: '100%'}}>
+                  {activeItems.map((item, index) => (
+                    <ListItem key = {index}>
+                      <ListItemButton onClick={() => { navigate(`/userState/medicineDetail/${item.medicineId}/${user}`) }} sx={{ borderRadius: '10px', p: 2 }}>
+                        <Grid container direction="column" spacing={2} sx={{ mx: 'auto' }}>
+                          <Typography sx={{ fontSize: 20, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{item.name}</Typography>
+                          <Typography sx={{ fontSize: 14 }}>Descripción: {item.description}</Typography>
+                          <Typography sx={{ fontSize: 16 }}> Cantidad de puntos acumulados hasta el momento: {item.globalPoints}</Typography>
+                          <Typography sx={{ fontSize: 16 }}>Cantidad de puntos usados en canjes: {item.usedPoints}</Typography>
+                          <Typography sx={{ fontSize: 16 }}>Cantidad de puntos disponibles: {item.availablePoints}</Typography>
+                        </Grid>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}      
+                </List>
+              </Grid>
+                <CustomPagination count={amountOfPages} page={page} variant="outlined" shape="rounded" siblingCount={0} boundaryCount={1}
+                sx={{ my: 5, display: 'flex', justifyContent: 'center' }} onChange={handlePage} />
+          </div>
       );
-    }
+  }
+  
+  async function checkUser(){
+    setData([]);
+    let jsonUser;
+    let jsonCanjes;
+    let jsonMedicines;
+    let points = 0;
 
-    function renderButtons(){
-      return(
-        <>
-          <Grid size={6}>
-            <Button onClick={() => {corroborar('Aprobada')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
-          </Grid>
-          <Grid size={6}>
-            <Button onClick={() => {corroborar('Rechazada')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
-          </Grid>
-        </>
-      );
-   }
-
-    function renderInput(){
-        return(
-            <div>
-                <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
-                <StyledTextField onClick={handleIconClick} value={fileName} slotProps={{ input: { readOnly: true, startAdornment: (
-                  <InputAdornment position="start">
-                    <UploadFileIcon fontSize="large" sx={{color: 'black', mb: 0.5, cursor: 'pointer'}}/>
-                  </InputAdornment>)}}} 
-                  id="outlined-basic" placeholder="Imagen de Factura"/>
-            </div>
-        );
-    }
-
-    function formatDate(fechaRecibida){
-      const fecha = new Date(fechaRecibida);
-      const diaConFormato = (fecha.getDate() < 10) ? '0' + fecha.getDate() : fecha.getDate();  
-      const mes = fecha.getMonth() + 1;
-      const año = fecha.getFullYear();
-      return (año + '-' + mes + '-' + diaConFormato) ;
-    }
-
-    async function corroborar(estado) {
-      const url = `/api/purchases/corroborar/${id}-${estado}`;
+    const urlUser = `/api/users/getUserByEmail/${email}`;
       try {
-        const response = await fetch(url);
+        //Fetches User
+        const response = await fetch(urlUser);
         if (!response.ok) {
           throw new Error(`Response status: ${response.status}`);
         }
-        navigate(`/userHistory`);
+        jsonUser = await response.json();
+        points = jsonUser[0].puntos;
+        setUser(jsonUser[0]._id);
+
       } catch (error) {
         console.error(error.message);
       }
-    };
 
-    useEffect(() => {
-      async function fetchPurchasesById() {
-        const url = `/api/purchases/getPurchaseById/${id}`;
-        try {
-          //Fetches Purchase
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-          }
-          const jsonPurchase = await response.json();
-
-          
-          //Fetches Pharmacy information
-          const urlFarmacia = `/api/pharmacies/getPharmacyById/${jsonPurchase.farmacia}`;
-          const responseFarmacia = await fetch(urlFarmacia);
-          if (!responseFarmacia.ok) {
-            throw new Error(`Response status: ${responseFarmacia.status}`);
-          }
-          const jsonFarmacia = await responseFarmacia.json();
-          jsonPurchase.farmacia = jsonFarmacia.nombre;
-
-          //Fetches Medicine information
-          const urlMedicina = `/api/medicines/getMedicineById/${jsonPurchase.medicamento}`;
-          const responseMedicina = await fetch(urlMedicina);
-          if (!responseMedicina.ok) {
-            throw new Error(`Response status: ${responseMedicina.status}`);
-          }
-          const jsonMedicina = await responseMedicina.json();
-          jsonPurchase.medicamento = jsonMedicina.nombre;
-
-          //Fetches client information
-          const urlCliente = `/api/users/getUserNameById/${jsonPurchase.cliente}`;
-          const responseCliente = await fetch(urlCliente);
-          if (!responseCliente.ok) {
-            throw new Error(`Response status: ${responseCliente.status}`);
-          }
-          const jsonCliente = await responseCliente.json();
-          jsonPurchase.cliente = jsonCliente.email;
-
-
-          //Formats Date
-          jsonPurchase.fecha = formatDate(jsonPurchase.fecha); 
-
-          //Sets the image
-          const byteArray = new Uint8Array(jsonPurchase.imgFactura.data.data); // Convertir a un Uint8Array
-          const blob = new Blob([byteArray], { type: jsonPurchase.imgFactura.contentType });
-
-          const reader = new FileReader();
-          
-          reader.onloadend = () => {
-            const base64String = reader.result;
-            setDataUri(base64String);
-          };
-          
-          reader.readAsDataURL(blob); 
-
-          setData(jsonPurchase);
-
-        } catch (error) {
-          console.error(error.message);
+    const urlCanje = `/api/canjes/getCanjesByUser/${jsonUser[0]._id}`;
+      try {
+        //Fetches Purchase
+        const response = await fetch(urlCanje);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
         }
-      };
-    
-      fetchPurchasesById();
-    }, []);
+        jsonCanjes = await response.json();
+
+      } catch (error) {
+        console.error(error.message);
+      }
+
+    for(const element of jsonCanjes){
+      const urlMedicine = `/api/medicines/getMedicineById/${element.medicamento}`;
+      try {
+        //Fetches Medicine
+        const response = await fetch(urlMedicine);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+        jsonMedicines = await response.json();
+        //calculateMedicineData(element, jsonMedicines, points);
+        console.log(jsonMedicines);
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+  } 
+
+  useEffect(() => {
+    changePage();
+  }, [data, page]);
 
   return (
     <div>      
-        <Container maxWidth="lg" sx={{mt: 5}}>
-        <h2>Detalles de medicina</h2>
+        <Container maxWidth="lg" sx={{mt: 5, paddingBottom: 5}}>
+        <h2>Detalles de usuario</h2>
         <hr></hr>
 
         <Grid container spacing={5} sx={{mt: 10, textAlign: 'center'}}>
           <Grid size={12}>
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Ingrese un identificador:</Typography>
-            <StyledTextField id="outlined-basic" placeholder="Identificador"/>
-          </Grid>
-          <Grid size={6} >
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Farmacia:</Typography>
-            <StyledTypography variant="body1">{data.farmacia}</StyledTypography>
-
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Fecha:</Typography>
-            <StyledTypography variant="body1">{data.fecha}</StyledTypography>
-
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Número de Factura:</Typography>
-            <StyledTypography variant="body1">{data.numeroFactura}</StyledTypography>
-          </Grid>
-          <Grid size={6}>
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Medicamento:</Typography>
-            <StyledTypography variant="body1">{data.medicamento}</StyledTypography>
-            
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Cantidad:</Typography>
-            <StyledTypography variant="body1" >{data.cantidad}</StyledTypography>
-
-
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Ingrese un email:</Typography>
+            <StyledTextField id="outlined-basic" placeholder="Email" onChange={(newValue) => { setEmail(newValue.target.value)}}/>
           </Grid>
         </Grid>
-
-        <Grid container sx={{mt: 10, mx: 'auto', width: 450, textAlign: 'center'}}>
+        
+        <Grid container sx={{mt: 10, mx: 'auto', textAlign: 'center'}}>
+          <Button variant="contained" onClick={checkUser}
+            sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none', m: 'auto', mb: 5 }}>Buscar</Button>
         </Grid>
+
+        {(activeItems.length > 0) && renderInput()}
         
       </Container> 
     </div>

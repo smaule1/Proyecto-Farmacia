@@ -27,3 +27,14 @@ async function consecutiveNumber(){
 
     return consecutive.numero + 1;
 }
+
+export const getCanjesByUser = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const canjes = await Canje.find({ cliente: id });
+        res.send(canjes);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las farmacias');
+    }
+}
