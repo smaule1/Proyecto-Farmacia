@@ -95,40 +95,45 @@ function MedicineDetail() {
     for (let i = 0; i < result.length; i++) {
       result[i].fecha = formatDate(result[i].fecha);
     }
-
     setPurchases(result);
   };
 
-  async function canjear(estado) {
-    const medicinaFormato = (selectedMedicine === null) ? null : selectedMedicine._id;
-    const farmaciaFormato = (selectedPharmacy === null) ? null : selectedPharmacy._id;
-    
+  async function canjear() {
+    const nombreFarmacia = "Farmacia La Bomba";
+    const date = new Date();
+    let pharmacyId;
+
+    const urlPharmacy = `/api/pharmacies/getPharmacyByName/${nombreFarmacia}`;
+    try {
+      //Fetches pharmacy id
+      const pharmacyResponse = await fetch(urlPharmacy);
+      if (!pharmacyResponse.ok) {
+        throw new Error(`Response status: ${pharmacyResponse.status}`);
+      }
+      pharmacyId = await pharmacyResponse.json();
+    } catch (error) {
+      console.error(error.message);
+      alert('Ocurrió un error inesperado');
+    }
+
     const url = `/api/canjes/registrar`;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     try {
       const response = await fetch(url, {
         method: "POST",
-        body: JSON.stringify({ 
-          medicamento: medicinaFormato, 
-          cantidad: selectedQuantity, 
-          fecha: selectedDate, 
-          numeroFactura: selectedSequence,
-          imgFactura: {
-            data: file.data,
-            contentType: file.contentType,
-          },
-          farmacia: farmaciaFormato,
-          estado: 'Pendiente',
-          cliente: currentUser._id
+        body: JSON.stringify({
+          fecha: date, 
+          cliente: user, 
+          farmacia: pharmacyId._id,
         }),
         headers: myHeaders,
         credentials: 'include'
       });
 
       if (response.ok) {
-        alert('Compra registrada correctamente');    
-        navigate("/temp");              
+        alert('Canje registrado correctamente');    
+        navigate("/userState");              
       } else {
         setAlertMessage("Ningún campo puede quedar vacío");    
       }     
@@ -151,7 +156,6 @@ function MedicineDetail() {
         }
         const jsonMedicine = await medicineResponse.json();
         setData(jsonMedicine);
-        console.log(jsonMedicine);
 
         //Fetches Purchases
         const purchasesResponse = await fetch(urlPurchases);
@@ -159,6 +163,7 @@ function MedicineDetail() {
           throw new Error(`Response status: ${purchasesResponse.status}`);
         }
         const jsonPurchases = await purchasesResponse.json();
+        
         
         //Fetches Pharmacy information
         for (const element of jsonPurchases){
@@ -170,7 +175,9 @@ function MedicineDetail() {
           const jsonFarmacia = await responseFarmacia.json();
           element.farmacia = jsonFarmacia.nombre;
         }
-        console.log(jsonPurchases);
+
+        sortPurchases(jsonPurchases);
+
       } catch (error) {
         console.error(error.message);
       }
@@ -209,7 +216,7 @@ function MedicineDetail() {
       </Grid>
 
         <Grid container sx={{mt: 10, mx: 'auto', textAlign: 'center'}}>
-          <Button variant="contained"
+          <Button variant="contained" onClick={canjear}
             sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none', m: 'auto', mb: 5 }}>Canjear</Button>
         </Grid>
 

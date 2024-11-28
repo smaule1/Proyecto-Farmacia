@@ -25,6 +25,18 @@ export const getPharmacies = async (req, res) => {
     }
 }
 
+export const getPharmacyByName = async (req, res) => {
+    try {
+        const { name } = req.params;
+        
+        const pharmacy = await Pharmacy.findOne({ nombre: name}, '_id');
+        res.status(200).json(pharmacy);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener la farmacia');
+    }
+}
+
 export const getPharmacyById = async (req, res) => {
     try {
         const { id } = req.params;

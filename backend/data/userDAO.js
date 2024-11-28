@@ -31,8 +31,6 @@ export const getPointsByEmail = async (email) => {
     }
 }
 
-
-
 export const getUserById = async (id) => {    
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw 'Invalid id';
