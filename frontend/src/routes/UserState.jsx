@@ -54,6 +54,8 @@ function UserState() {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
+  const [cantidad, setCantidad] = useState(0);
+  const [points, setPoints] = useState(0);
   const [user, setUser] = useState();
   const [activeItems, setActiveItems] = useState([]);
   const [page, setDataPage] = useState(1);
@@ -112,6 +114,20 @@ function UserState() {
               </Grid>
                 <CustomPagination count={amountOfPages} page={page} variant="outlined" shape="rounded" siblingCount={0} boundaryCount={1}
                 sx={{ my: 5, display: 'flex', justifyContent: 'center' }} onChange={handlePage} />
+
+            <hr></hr>
+            <h4 style={{textAlign: 'center'}}>Datos globales</h4>
+            <List variant="outlined" sx={{display: 'flex'}}>
+                <ListItem>
+                    <Grid container direction="column" spacing={2} sx={{ mx: 'auto' }}>
+                      <Typography sx={{ fontSize: 16 }}>Total de medicamentos adquiridos: {cantidad}</Typography>
+                      <Typography sx={{ fontSize: 16 }}>Total de puntos globales adquiridos: {points}</Typography>
+                      <Typography sx={{ fontSize: 16 }}>Cantidad de puntos globales usados en canjes: 0</Typography>
+                      <Typography sx={{ fontSize: 16 }}>Cantidad de puntos globales disponibles: {points}</Typography>
+                    </Grid>
+                    <Typography sx={{ px: 2, py: 1, borderRadius: 20, fontSize: 12, color: 'white'}}></Typography>
+                </ListItem>
+            </List>
           </div>
       );
   }
@@ -132,6 +148,7 @@ function UserState() {
         }
         jsonUser = await response.json();
         points = jsonUser[0].puntos;
+        setPoints(points);
         setUser(jsonUser[0]._id);
 
       } catch (error) {
@@ -150,8 +167,10 @@ function UserState() {
       } catch (error) {
         console.error(error.message);
       }
-
+    
+    let contador = 0;
     for(const element of jsonPurchases){
+      contador++;
       const urlMedicine = `/api/medicines/getMedicineById/${element.medicamento}`;
       try {
         //Fetches Medicine
@@ -166,6 +185,7 @@ function UserState() {
         console.error(error.message);
       }
     }
+    setCantidad(contador);
   } 
 
   useEffect(() => {
