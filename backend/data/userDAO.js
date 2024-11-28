@@ -25,7 +25,7 @@ export const getEmailById = async (id) => {
 export const getPointsByEmail = async (email) => {    
     try {        
         const points = await User.find({ email: email }, 'puntos');
-        return points.toObject();                      
+        return points;                   
     } catch (error) {
         throw error;
     }

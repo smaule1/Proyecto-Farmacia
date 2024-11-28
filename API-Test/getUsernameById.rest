@@ -1,4 +1,4 @@
-GET http://localhost:5000/api/users/getUserNameById/672aba79d5203b739a9c4897 HTTP/1.1
+GET http://localhost:5000/api/users/getUserByEmail/aa@a HTTP/1.1
 content-type: application/json
 
 {
