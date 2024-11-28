@@ -1,6 +1,8 @@
 import User from '../model/userModel.js';
-import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
+import { 
+    decodeToken,
+    createToken
+ } from '../utils/jwt.js';
 import bcrypt from "bcrypt";
 import {
     registrarUsuario,
@@ -43,15 +45,14 @@ export const login = async (req, res) => {
     const reqToken = req.cookies.userInfo;
     if (reqToken) { //ReqToken se encuentra en los cookies            
         try {
-            const decodedToken = jwt.verify(reqToken, process.env.JWT_PRIVATE_KEY);  //ReqToken es válido                                     
+            const decodedToken = decodeToken(reqToken);  //ReqToken es válido                                     
             const user = await getUser(decodedToken._id);
             const token = createToken(user);
             //Enviar token fresco al usuario
             res.cookie('userInfo', token, { httpOnly: true, maxAge: MAX_AGE, sameSite: 'strict' })
             res.status(200).json({ data: { user } });
             return;
-        } catch (err) {
-            console.log(err);
+        } catch (err) {            
             if (err.name == 'TokenExpiredError' || err.name == 'JsonWebTokenError') { //ReqToken es inválido
                 res.cookie('userInfo', '', { maxAge: 1, sameSite: 'strict', httpOnly: true }); //El token inválido se elimina de las cookies                                        
             } else {
@@ -102,17 +103,6 @@ export const getUserNameById = async (req, res) => {
     }
 }
 
-function createToken(user) {
-    const token = jwt.sign(
-        {
-            _id: user._id,
-            rol: user.rol
-        },
-        process.env.JWT_PRIVATE_KEY,
-        { expiresIn: "15m" }
-    );
-    return token;
-}
 
 
 
