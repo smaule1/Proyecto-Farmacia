@@ -78,6 +78,13 @@ function Medicine() {
     );
   }
 
+  const changeValues = (value) => {
+    if (!value) return;
+    setSelectedEstado(value.estado || NULL);
+    setTotalPuntos(Number(value.puntosRequeridos) || 0);
+    setPuntos(Number(value.puntosUnitarios) || 0);
+  }
+
   const handleUpdate = async (event) => {
     event.preventDefault();
 
@@ -104,8 +111,12 @@ function Medicine() {
         setAlertMessage("Error: Debe especificar la cantidad de puntos unitarios.");
         return;
       }
+
+      selectedMedicine.puntosRequeridos = totalPuntos
+      selectedMedicine.puntosUnitarios = puntos
     }
 
+    selectedMedicine.estado = selectedEstado
     await setBeneficio()
   };
 
@@ -159,28 +170,30 @@ return (
         <hr></hr>
 
         <Grid container spacing={5} sx={{mt: 10, mx: 'auto', width: '100%', textAlign: 'center'}}>
-          <Grid size={6} >
+          <Grid size={6}>
             <Autocomplete noOptionsText="No se encontraron resultados" options={medicamentos}
              getOptionLabel={(option) => option.nombre} renderOption={(props, option) => (
               <li {...props} key={option._id}> {/* Esto es para manejar hijos repetidos (Aunque no debería suceder) */}
                 {option.nombre}
               </li>)}
-            renderInput={(params) => <StyledTextField {...params} placeholder='Medicamento'/>} onChange={(event, newValue) => setSelectedMedicina(newValue)} />
+            renderInput={(params) => <StyledTextField {...params} placeholder='Medicamento'/>} onChange={(event, newValue) => {setSelectedMedicina(newValue); changeValues(newValue)}} />
           </Grid>
-          <Grid size={6}>
+          <Grid size={6} id="grid1">
             <Autocomplete noOptionsText="No se encontraron resultados" options={estados}
-              getOptionLabel={(option) => option.nombre} renderOption={(props, option) => (
+              getOptionLabel={(option) => option.nombre || selectedEstado} renderOption={(props, option) => (
                 <li {...props} key={option._id}> {/* Esto es para manejar hijos repetidos (Aunque no debería suceder) */}
                   {option.nombre}
                 </li>)}
-              renderInput={(params) => <StyledTextField {...params} placeholder='Estado'/>} onChange={(event, newValue) => setSelectedEstado(newValue)} />
+              renderInput={(params) => <StyledTextField {...params} placeholder='Estado'/>} onChange={(event, newValue) => setSelectedEstado(newValue)} value={selectedEstado || null}/>
           </Grid>
           <Grid size={6}>
-           <AmountCheckBox handleQuantity={handleTotal} CustomCheckBox={CustomCheckBox} placeholder="Puntos Necesarios" />
+           <AmountCheckBox handleQuantity={handleTotal} CustomCheckBox={CustomCheckBox} placeholder="Puntos Necesarios" 
+            value={totalPuntos || ''} setValue={setTotalPuntos}/>
           </Grid>
           <Grid size={6}>
-           <AmountCheckBox handleQuantity={handlePuntos} CustomCheckBox={CustomCheckBox} placeholder="Puntos por Unidad" />
-          </Grid> 
+           <AmountCheckBox handleQuantity={handlePuntos} CustomCheckBox={CustomCheckBox} placeholder="Puntos por Unidad" 
+            value={puntos || ''} setValue={setPuntos}/>
+          </Grid>
         </Grid>
 
         <Grid container sx={{mt: 10, mx: 'auto', width: 450, textAlign: 'center'}}>
