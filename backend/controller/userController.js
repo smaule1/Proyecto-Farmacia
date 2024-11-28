@@ -3,11 +3,12 @@ import {
     decodeToken,
     createToken
  } from '../utils/jwt.js';
-import bcrypt from "bcrypt";
+import { comparePassword } from '../utils/encrypter.js';
 import {
     registrarUsuario,
     getUsernameById,
-    getUser
+    getUser,
+    getUserByEmail as getPointsByEmailLogic
 } from '../logic/userLogic.js';
 
 
@@ -29,10 +30,8 @@ export const registrar = async (req, res) => {
 export const getUserByEmail = async (req, res) => {
     try {
         const { email } = req.params;
-        const points = await User.find({ email: email }, 'puntos');
-
+        const points = await getPointsByEmailLogic(email);
         res.send(points);
-
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al obtener puntos');
@@ -76,7 +75,7 @@ export const login = async (req, res) => {
         return;
     }
     //Check Password
-    const auth = await bcrypt.compare(password, user.password);
+    const auth = await comparePassword(password, user.password);
     if (!auth) {
         res.status(400).json({ errors: [{ param: 'password', message: 'Contraseña Incorrecta' }] });
         return;

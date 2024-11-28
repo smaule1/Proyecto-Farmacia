@@ -1,7 +1,8 @@
 import {
     createUser,
     getEmailById,
-    getUserById
+    getUserById,
+    getPointsByEmail
 } from "../data/userDAO.js";
 import { hashPassword } from "../utils/encrypter.js";
 
@@ -20,6 +21,14 @@ export const registrarUsuario = async (userData) => {
 export const getUsernameById = async (id) => {
     try {        
         return await getEmailById(id);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getUserByEmail = async (id) => {
+    try {        
+        return await getPointsByEmail(id);
     } catch (error) {
         throw error;
     }

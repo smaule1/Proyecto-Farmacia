@@ -22,6 +22,17 @@ export const getEmailById = async (id) => {
     }
 }
 
+export const getPointsByEmail = async (email) => {    
+    try {        
+        const points = await User.find({ email: email }, 'puntos');
+        return points.toObject();                      
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+
 export const getUserById = async (id) => {    
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw 'Invalid id';
