@@ -45,7 +45,7 @@ function Home() {
             }
             const json = await response.json();
             setActiveItems(json);
-            
+            console.log(json)
 
           } catch (error) {
             console.error(error.message);

@@ -2,9 +2,8 @@ import {sorter as strategy} from './sorterInterface'
 import {implementsInterface as check} from './sorterInterface'
 
 export class sortDateDesc {
-    sort(canjes) {
-        // Muy útil
-        return canjes;
+    sort(list) {
+        return list.sort((a,b) => new Date(b.fecha) - new Date (a.fecha));
     }
 }
 
