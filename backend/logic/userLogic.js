@@ -1,5 +1,5 @@
-import { createUser } from "../data/userDAO";
-import { hashPassword } from "../utils/encrypter";
+import { createUser } from "../data/userDAO.js";
+import { hashPassword } from "../utils/encrypter.js";
 
 
 export const registrarUsuario = async (userData) => {    
