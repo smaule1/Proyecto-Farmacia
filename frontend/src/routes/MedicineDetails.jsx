@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { TextField, Container, styled, Button, Typography, Box, Link }from '@mui/material';
+import { TextField, Container, styled, Button, Typography, Pagination, List, ListItem, ListItemButton, ListItemText, Box }from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import CurrentUserContext from '../Context';
 
@@ -41,51 +41,50 @@ const StyledTypography = styled(Typography)(({ }) => ({
     padding: '8px 20px 20px',
 }));
 
+const CustomPagination = styled(Pagination)(({ }) => ({
+  '& .MuiPaginationItem-root': {
+    borderColor: '#7749F8',
+  },
+  '& .MuiPaginationItem-previousNext': {
+    backgroundColor: '#7749F8',
+  },
+}));
+
 function MedicineDetail() { 
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const navigate = useNavigate();
+  const { id, user } = useParams();
 
-    const [data, setData] = useState([]);
-    const [input, setInput] = useState([false]);
-    const [dataUri, setDataUri] = useState(null);
-    
-    const {
-      currentUser
-    } = useContext(CurrentUserContext);
+  const [data, setData] = useState([]);
+  const [purchases, setPurchases] = useState([]);
+  const [page, setDataPage] = useState(1);
+  const [activeItems, setActiveItems] = useState([]);
+  
+  const itemsPerPage = 2;
+  const amountOfPages = Math.ceil(purchases.length / itemsPerPage);
 
-    function backButton(){
-      return(
-          <Button onClick={() => {navigate(-1);}} variant="contained" sx={{m: 'auto', borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Volver</Button>
-      );
-    }
+  const {
+    currentUser
+  } = useContext(CurrentUserContext);
 
-    function renderButtons(){
-      return(
-        <>
-          <Grid size={6}>
-            <Button onClick={() => {corroborar('Aprobada')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Aprobar</Button>
-          </Grid>
-          <Grid size={6}>
-            <Button onClick={() => {corroborar('Rechazada')}} variant="contained" sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none'}}>Reprobar</Button>
-          </Grid>
-        </>
-      );
-   }
+  const changePage = () => {
+      const newActiveItems = purchases.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+      setActiveItems(newActiveItems);
+      console.log(newActiveItems);
+  };
 
-    function renderInput(){
-        return(
-            <div>
-                <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
-                <StyledTextField onClick={handleIconClick} value={fileName} slotProps={{ input: { readOnly: true, startAdornment: (
-                  <InputAdornment position="start">
-                    <UploadFileIcon fontSize="large" sx={{color: 'black', mb: 0.5, cursor: 'pointer'}}/>
-                  </InputAdornment>)}}} 
-                  id="outlined-basic" placeholder="Imagen de Factura"/>
-            </div>
-        );
-    }
+  const handlePage = (event, newPage) => {
+    setDataPage(newPage);
+  };
 
-    function renderData(){
+  function formatDate(fechaRecibida){
+    const fecha = new Date(fechaRecibida);
+    const diaConFormato = (fecha.getDate() < 10) ? '0' + fecha.getDate() : fecha.getDate();  
+    const mes = fecha.getMonth() + 1;
+    const año = fecha.getFullYear();
+    return (año + '-' + mes + '-' + diaConFormato) ;
+  }
+
+  function renderInput(){
       return(
           <div>
               <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
@@ -96,128 +95,138 @@ function MedicineDetail() {
                 id="outlined-basic" placeholder="Imagen de Factura"/>
           </div>
       );
-    } 
-
-    function formatDate(fechaRecibida){
-      const fecha = new Date(fechaRecibida);
-      const diaConFormato = (fecha.getDate() < 10) ? '0' + fecha.getDate() : fecha.getDate();  
-      const mes = fecha.getMonth() + 1;
-      const año = fecha.getFullYear();
-      return (año + '-' + mes + '-' + diaConFormato) ;
+  }
+  
+  function sortPurchases(jsonPurchases) {
+    //Patrón?
+    let result = [];
+    for(const element of jsonPurchases){
+      if(element.medicamento === id){
+        result.push(element);
+      }
     }
 
-    async function corroborar(estado) {
-      const url = `/api/purchases/corroborar/${id}-${estado}`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-        navigate(`/userHistory`);
-      } catch (error) {
-        console.error(error.message);
+    for (let i = 0; i < result.length; i++) {
+      result[i].fecha = formatDate(result[i].fecha);
+    }
+    console.log(result);
+
+    setPurchases(result);
+  };
+
+  async function corroborar(estado) {
+    const url = `/api/purchases/corroborar/${id}-${estado}`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
       }
-    };
+      navigate(`/userHistory`);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
-    useEffect(() => {
-      async function fetchPurchasesById() {
-        const url = `/api/purchases/getPurchaseById/${id}`;
-        try {
-          //Fetches Purchase
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-          }
-          const jsonPurchase = await response.json();
+  useEffect(() => {
+    async function fetchPurchasesById() {
+      const urlMedicine = `/api/medicines/getMedicineById/${id}`;
+      const urlPurchases = `/api/purchases/getPurchasesByUser/${user}`;
+      try {
+        //Fetches Medicine
+        const medicineResponse = await fetch(urlMedicine);
+        if (!medicineResponse.ok) {
+          throw new Error(`Response status: ${medicineResponse.status}`);
+        }
+        const jsonMedicine = await medicineResponse.json();
+        setData(jsonMedicine);
 
-          
-          //Fetches Pharmacy information
-          const urlFarmacia = `/api/pharmacies/getPharmacyById/${jsonPurchase.farmacia}`;
+        //Fetches Purchases
+        const purchasesResponse = await fetch(urlPurchases);
+        if (!purchasesResponse.ok) {
+          throw new Error(`Response status: ${purchasesResponse.status}`);
+        }
+        const jsonPurchases = await purchasesResponse.json();
+        
+        //Fetches Pharmacy information
+        for (const element of jsonPurchases){
+          const urlFarmacia = `/api/pharmacies/getPharmacyById/${element.farmacia}`;
           const responseFarmacia = await fetch(urlFarmacia);
           if (!responseFarmacia.ok) {
             throw new Error(`Response status: ${responseFarmacia.status}`);
           }
           const jsonFarmacia = await responseFarmacia.json();
-          jsonPurchase.farmacia = jsonFarmacia.nombre;
-
-          //Fetches Medicine information
-          const urlMedicina = `/api/medicines/getMedicineById/${jsonPurchase.medicamento}`;
-          const responseMedicina = await fetch(urlMedicina);
-          if (!responseMedicina.ok) {
-            throw new Error(`Response status: ${responseMedicina.status}`);
-          }
-          const jsonMedicina = await responseMedicina.json();
-          jsonPurchase.medicamento = jsonMedicina.nombre;
-
-          //Fetches client information
-          const urlCliente = `/api/users/getUserNameById/${jsonPurchase.cliente}`;
-          const responseCliente = await fetch(urlCliente);
-          if (!responseCliente.ok) {
-            throw new Error(`Response status: ${responseCliente.status}`);
-          }
-          const jsonCliente = await responseCliente.json();
-          jsonPurchase.cliente = jsonCliente.email;
-
-
-          //Formats Date
-          jsonPurchase.fecha = formatDate(jsonPurchase.fecha); 
-
-          //Sets the image
-          const byteArray = new Uint8Array(jsonPurchase.imgFactura.data.data); // Convertir a un Uint8Array
-          const blob = new Blob([byteArray], { type: jsonPurchase.imgFactura.contentType });
-
-          const reader = new FileReader();
-          
-          reader.onloadend = () => {
-            const base64String = reader.result;
-            setDataUri(base64String);
-          };
-          
-          reader.readAsDataURL(blob); 
-
-          setData(jsonPurchase);
-
-        } catch (error) {
-          console.error(error.message);
+          element.farmacia = jsonFarmacia.nombre;
         }
-      };
-    
-      fetchPurchasesById();
-    }, []);
+
+        sortPurchases(jsonPurchases);
+
+      } catch (error) {
+        console.error(error.message);
+      }
+    };  
+    fetchPurchasesById();
+  }, []);
+
+  useEffect(() => {
+    changePage();
+  }, [purchases, page]);
 
   return (
     <div>      
-        <Container maxWidth="lg" sx={{mt: 5}}>
+        <Container maxWidth="lg" sx={{mt: 5, pb: 5}}>
         <h2>Detalles de medicina</h2>
         <hr></hr>
 
         <Grid container spacing={5} sx={{mt: 10, textAlign: 'center'}}>
-          <Grid size={12}>
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Ingrese un identificador:</Typography>
-            <StyledTextField id="outlined-basic" placeholder="Identificador"/>
-          </Grid>
-
           <Grid size={6} >
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Farmacia:</Typography>
-            <StyledTypography variant="body1">{data.farmacia}</StyledTypography>
+            <Typography sx={{ fontSize: 32}}>{data.nombre || ""}</Typography>
+            <Typography sx={{ fontSize: 14 }}>{data.descripcion || ""}</Typography>
 
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Fecha:</Typography>
-            <StyledTypography variant="body1">{data.fecha}</StyledTypography>
+            <Typography variant="body1" sx={{px: 2, pb: 1, pt: 5}}>Puntos que otorga: </Typography>
+            <StyledTypography variant="body1">{data.puntosUnitarios || ""}</StyledTypography>
 
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Número de Factura:</Typography>
-            <StyledTypography variant="body1">{data.numeroFactura}</StyledTypography>
-          </Grid>
-          <Grid size={6}>
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Medicamento:</Typography>
-            <StyledTypography variant="body1">{data.medicamento}</StyledTypography>
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Puntos requeridos:</Typography>
+            <StyledTypography variant="body1">{data.puntosRequeridos || ""}</StyledTypography>
             
-            <Typography variant="body1" sx={{px: 2, py: 1}}>Cantidad:</Typography>
-            <StyledTypography variant="body1" >{data.cantidad}</StyledTypography>
+            <Typography variant="body1" sx={{px: 2, py: 1}}>Puntos disponibles:</Typography>
+            <StyledTypography variant="body1" >98123</StyledTypography>
+
           </Grid>
+        <Grid size={6}>
+          <Typography variant="body1" sx={{px: 2, py: 1}}>Imagen:</Typography>
+        </Grid>
+      </Grid>
+
+        <Grid container sx={{mt: 10, mx: 'auto', textAlign: 'center'}}>
+          <Button variant="contained"
+            sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none', m: 'auto', mb: 5 }}>Canjear</Button>
         </Grid>
 
-        <Grid container sx={{mt: 10, mx: 'auto', width: 450, textAlign: 'center'}}>
-        </Grid>
+        <hr></hr>
+        <h4 style={{paddingTop: '30px'}}>Solicitudes de compra con estos medicamentos</h4>
+
+        <Box>
+          <Grid sx={{width: '100%'}}>
+            <List variant="outlined" sx={{display: 'flex'}}>
+              {(activeItems.length !== 0) ? activeItems.map((item, index) => (
+                <ListItem key={index}>
+                  <ListItemButton sx={{ borderRadius: '10px', p: 2, border: '2px solid rgba(163,159,170,.5)' }}>
+                    <Grid container direction="row" spacing={2} sx={{ mx: 'auto' }}>
+                      <Typography sx={{ fontSize: 16 }}>Fecha: {item.fecha}</Typography>
+                      <Typography sx={{ fontSize: 16 }}>Número de Factura: {item.numeroFactura}</Typography>
+                      <Typography sx={{ fontSize: 16 }}>Farmacia donde fue adquirido: {item.farmacia}</Typography>
+                      <Typography sx={{ fontSize: 16 }}>Número de Canje: </Typography>
+                    </Grid>
+                    <Typography sx={{ px: 2, py: 1, borderRadius: 20, fontSize: 12, color: 'white'}}>{item.estado}</Typography>
+                  </ListItemButton>
+                </ListItem>
+              )) : (<p>No hay solicitudes con este medicamento</p>)}
+            </List>
+          </Grid>
+        </Box>
+
+        <CustomPagination count={amountOfPages} page={page} variant="outlined" shape="rounded" siblingCount={0} boundaryCount={1}
+          sx={{ mt: 5, display: 'flex', justifyContent: 'center' }} onChange={handlePage} />
         
       </Container> 
     </div>

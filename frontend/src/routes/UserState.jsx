@@ -52,15 +52,14 @@ const CustomPagination = styled(Pagination)(({ }) => ({
 
 function UserState() { 
   const navigate = useNavigate();
-  const { id } = useParams();
 
-  const [points, setPoints] = useState(0);
   const [data, setData] = useState([]);
+  const [user, setUser] = useState();
   const [activeItems, setActiveItems] = useState([]);
   const [page, setDataPage] = useState(1);
   const [email, setEmail] = useState('');
   
-  const itemsPerPage = 4;
+  const itemsPerPage = 3;
   const amountOfPages = Math.ceil(data.length / itemsPerPage);
 
   const {
@@ -76,38 +75,53 @@ function UserState() {
     setDataPage(newPage);
   };
 
-  function calculateMedicineData(purchase, medicine){
-    const globalPoints = purchase.cantidad * medicine.puntosRequeridos;
+  function calculateMedicineData(purchase, medicine, points){
+    const globalPoints = purchase.cantidad * medicine.puntosUnitarios;
     const builtData = {
       name: medicine.nombre,
       description: medicine.descripcion,
       globalPoints: globalPoints,
       usedPoints: 0,
       availablePoints: points,
+      medicineId: medicine._id,
     };
     setData(prevData => [...prevData, builtData]);
-
-    
   }
 
   function renderInput(){
       return(
           <div>
-              <Typography variant="body1" sx={{px: 2, py: 1}}>Usuario:</Typography>
-              <StyledTextField onClick={handleIconClick} value={fileName} slotProps={{ input: { readOnly: true, startAdornment: (
-                <InputAdornment position="start">
-                  <UploadFileIcon fontSize="large" sx={{color: 'black', mb: 0.5, cursor: 'pointer'}}/>
-                </InputAdornment>)}}} 
-                id="outlined-basic" placeholder="Imagen de Factura"/>
+              <hr></hr>
+              <h4 style={{textAlign: 'center'}}>Medicamentos</h4>
+              <Grid size={8}>
+                <List variant="outlined" sx={{ display: 'flex', width: '100%'}}>
+                  {activeItems.map((item, index) => (
+                    <ListItem key = {index}>
+                      <ListItemButton onClick={() => { navigate(`/userState/medicineDetail/${item.medicineId}/${user}`) }} sx={{ borderRadius: '10px', p: 2 }}>
+                        <Grid container direction="column" spacing={2} sx={{ mx: 'auto' }}>
+                          <Typography sx={{ fontSize: 20, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{item.name}</Typography>
+                          <Typography sx={{ fontSize: 14 }}>Descripción: {item.description}</Typography>
+                          <Typography sx={{ fontSize: 16 }}> Cantidad de puntos acumulados hasta el momento: {item.globalPoints}</Typography>
+                          <Typography sx={{ fontSize: 16 }}>Cantidad de puntos usados en canjes: {item.usedPoints}</Typography>
+                          <Typography sx={{ fontSize: 16 }}>Cantidad de puntos disponibles: {item.availablePoints}</Typography>
+                        </Grid>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}      
+                </List>
+              </Grid>
+                <CustomPagination count={amountOfPages} page={page} variant="outlined" shape="rounded" siblingCount={0} boundaryCount={1}
+                sx={{ my: 5, display: 'flex', justifyContent: 'center' }} onChange={handlePage} />
           </div>
       );
   }
-
+  
   async function checkUser(){
     setData([]);
     let jsonUser;
     let jsonPurchases;
     let jsonMedicines;
+    let points = 0;
 
     const urlUser = `/api/users/getUserByEmail/${email}`;
       try {
@@ -117,7 +131,8 @@ function UserState() {
           throw new Error(`Response status: ${response.status}`);
         }
         jsonUser = await response.json();
-        setPoints(jsonUser.puntos);
+        points = jsonUser[0].puntos;
+        setUser(jsonUser[0]._id);
 
       } catch (error) {
         console.error(error.message);
@@ -145,13 +160,12 @@ function UserState() {
           throw new Error(`Response status: ${response.status}`);
         }
         jsonMedicines = await response.json();
-        calculateMedicineData(element, jsonMedicines);
+        calculateMedicineData(element, jsonMedicines, points);
         
       } catch (error) {
         console.error(error.message);
       }
     }
-    console.log(amountOfPages);
   } 
 
   useEffect(() => {
@@ -160,7 +174,7 @@ function UserState() {
 
   return (
     <div>      
-        <Container maxWidth="lg" sx={{mt: 5}}>
+        <Container maxWidth="lg" sx={{mt: 5, paddingBottom: 5}}>
         <h2>Detalles de usuario</h2>
         <hr></hr>
 
@@ -176,31 +190,7 @@ function UserState() {
             sx={{borderRadius: 3, width: 220, backgroundColor: '#7749F8',  fontWeight: 600, textTransform: 'none', m: 'auto', mb: 5 }}>Buscar</Button>
         </Grid>
 
-        <hr></hr>
-        <h4 style={{textAlign: 'center'}}>Medicamentos</h4>
-        <Grid size={8}>
-          <List variant="outlined" sx={{ display: 'flex', width: '100%'}}>
-
-            {(activeItems.length > 0) && activeItems.map((item, index) => (
-              <ListItem key = {index}>
-                <ListItemButton sx={{ borderRadius: '10px', p: 2 }}>
-                  {/* Usamos Grid para crear 4 columnas */}
-                  <Grid container direction="column" spacing={2} sx={{ mx: 'auto' }}>
-                    <Typography sx={{ fontSize: 20, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{item.name}</Typography>
-                    <Typography sx={{ fontSize: 14 }}>Descripción: {item.description}</Typography>
-                    <Typography sx={{ fontSize: 16 }}> Cantidad de puntos acumulados hasta el momento: {item.globalPoints}</Typography>
-                    <Typography sx={{ fontSize: 16 }}>Cantidad de puntos usados en canjes: {item.usedPoints}</Typography>
-                    <Typography sx={{ fontSize: 16 }}>Cantidad de puntos disponibles: {item.availablePoints}</Typography>
-                  </Grid>
-                </ListItemButton>
-              </ListItem>
-              ))}   
-          
-          </List>
-          
-        </Grid>
-          <CustomPagination count={amountOfPages} page={page} variant="outlined" shape="rounded" siblingCount={0} boundaryCount={1}
-          sx={{ mt: 5, display: 'flex', justifyContent: 'center' }} onChange={handlePage} />
+        {(activeItems.length > 0) && renderInput()}
         
       </Container> 
     </div>

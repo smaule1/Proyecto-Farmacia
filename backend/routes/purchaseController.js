@@ -7,7 +7,7 @@ export default router;
 
 router.post('/registrar', registrar);
 router.get('/getAll', getPurchases);
-router.get('/getPurchaseByUser/:id', getPurchasesByUser);
+router.get('/getPurchasesByUser/:id', getPurchasesByUser);
 router.get('/getPurchaseById/:id', getPurchasesById);
 router.get('/corroborar/:id-:estado', corroborar);
 router.get('/getLastPurchasesByUser/:id', getLastPurchasesByUser);

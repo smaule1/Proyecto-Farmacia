@@ -31,7 +31,7 @@ export const getPurchases = async (req, res) => {
 export const getPurchasesByUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const purchases = await Purchase.find({ cliente: id }, 'numeroFactura fecha estado');
+        const purchases = await Purchase.find({ cliente: id });
         res.send(purchases);
 
     } catch (error) {

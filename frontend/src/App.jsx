@@ -36,7 +36,7 @@ function App() {
             
           </Route>
           <Route path="/canjesHistory" element={<CanjesHistory />} />
-          <Route path="/userState/medicineDetail" element={<MedicineDetail />} />
+          <Route path="/userState/medicineDetail/:id/:user" element={<MedicineDetail />} />
           <Route path="/userState" element={<UserState />} />
           <Route path="/register" element={<Register />} />          
           <Route path="/login" element={<Login />} />
