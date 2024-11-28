@@ -13,6 +13,7 @@ import UserState from './routes/UserState';
 import Medicine from './routes/Medicine';
 import MedicineDetail from './routes/MedicineDetails';
 import CanjesHistory from './routes/CanjesHistory';
+import RegisterPharmacy from './routes/RegisterPharmacy';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -33,6 +34,7 @@ function App() {
             <Route path="/userHistory" element={<UserHistory />} />
             <Route path="/userHistory/purchaseData/:id" element={<PurchaseData />} />
             <Route path="/beneficio" element={<Medicine />} />
+            <Route path="/registrarFarmacia" element={<RegisterPharmacy />} />
             
           </Route>
           <Route path="/canjesHistory" element={<CanjesHistory />} />
