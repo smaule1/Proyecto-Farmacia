@@ -18,8 +18,19 @@ export const getEmailById = async (id) => {
         const user = await User.findById(id, 'email');
         return user.toObject();                      
     } catch (error) {
-        const errorList = handleMongooseErros(error);
-        throw errorList;
+        throw error;
+    }
+}
+
+export const getUserById = async (id) => {    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw 'Invalid id';
+    }    
+    try {
+        const user = await User.findById(id);
+        return user.toObject();
+    } catch (error) {
+        throw error;
     }
 }
 
