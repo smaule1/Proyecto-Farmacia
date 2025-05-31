@@ -1,5 +1,5 @@
-import {sorter as strategy} from './sorterInterface'
-import {implementsInterface as check} from './sorterInterface'
+import {sorter as strategy} from './sorterInterface.js'
+import {implementsInterface as check} from './sorterInterface.js'
 
 export class sortDateDesc {
     sort(list) {
@@ -8,7 +8,7 @@ export class sortDateDesc {
 }
 
 // Para verificar que implementa la interfaz correctamente
-implemented = check(sortDateDesc, strategy)
+let implemented = check(sortDateDesc, strategy)
 if (!implemented) {
     console.log("The class must implement the interface")
 }
