@@ -32,9 +32,12 @@ app.use('/api/canjes', canjeRoutes);
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, async ()=>{
+export const start = app.listen(port, async ()=>{
 	console.log(`Server started at port ${port}`);  
 	connectDB();    	
 });
+
+
+
 
 

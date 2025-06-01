@@ -1,7 +1,9 @@
 import { should } from 'chai';
 import { createToken, decodeToken } from '../utils/jwt.js'
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
+dotenv.config({ path: './test/test.env' });
 
 should();
 
