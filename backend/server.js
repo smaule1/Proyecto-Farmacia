@@ -9,6 +9,7 @@ import pharmacyRoutes from './routes/pharmacyRoutes.js'
 import purchaseRoutes from './routes/purchaseController.js'
 import perfilFarmaciaRoutes from './routes/perfilFarmaciaRoutes.js'
 import canjeRoutes from './routes/canjeRoutes.js'
+import { fail } from './test/fail.js';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use('/api/pharmacies', pharmacyRoutes);
 app.use('/api/purchases', purchaseRoutes);
 app.use('/api/perfilFarmacia', perfilFarmaciaRoutes);
 app.use('/api/canjes', canjeRoutes);
+app.post('/api/test/fail', fail)
 
 
 const port = process.env.PORT || 5000;
