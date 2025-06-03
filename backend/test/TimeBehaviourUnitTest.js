@@ -31,7 +31,7 @@ describe('Módulo Usuarios', function() {
         await User.deleteMany({})
     })
 
-    it('user logged-in correctly', async function() {
+    it('user register correctly', async function() {
         this.timeout(500)
         const res = await chai.request.execute(start)
             .post('/api/users/registrar')

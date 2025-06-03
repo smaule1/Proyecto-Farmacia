@@ -1,20 +1,15 @@
 import js from "@eslint/js";
-import pluginReact from "eslint-plugin-react";
 import globals from "globals";
-import { defineConfig } from "eslint-define-config";
+import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],
     languageOptions: {
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-      globals: globals.browser,
+      globals: {...globals.node,},
+    },
+    plugins: {
+      js,
     },
     rules: {
       "max-lines-per-function": ["warn", { max: 25, skipBlankLines: true, skipComments: true }],
