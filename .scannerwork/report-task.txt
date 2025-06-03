@@ -1,0 +1,6 @@
+projectKey=my-react-app
+serverUrl=http://localhost:9000
+serverVersion=25.3.0.104237
+dashboardUrl=http://localhost:9000/dashboard?id=my-react-app
+ceTaskId=1e356ebf-da54-454d-82d2-931fbb289bac
+ceTaskUrl=http://localhost:9000/api/ce/task?id=1e356ebf-da54-454d-82d2-931fbb289bac
