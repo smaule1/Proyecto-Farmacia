@@ -20,7 +20,7 @@ export const registrarUsuario = async (userData) => {
 
 export const getUsernameById = async (id) => {
     try {        
-        return await getEmailById(id);
+        return await getUserById(id);
     } catch (error) {
         throw error;
     }
